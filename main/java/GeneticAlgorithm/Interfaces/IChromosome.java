@@ -1,5 +1,6 @@
 package main.java.GeneticAlgorithm.Interfaces;
 
-public interface IChromosome {
-	double GetFitness();
+public interface IChromosome<T> {
+	double getFitness();
+	T getEncoding();
 }

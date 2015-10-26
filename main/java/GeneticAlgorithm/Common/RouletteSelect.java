@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import main.java.GeneticAlgorithm.Interfaces.IChromosome;
 import main.java.GeneticAlgorithm.Interfaces.ISelect;
 
+@SuppressWarnings("rawtypes")
 public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 
 	@SuppressWarnings("unchecked")

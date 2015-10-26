@@ -2,11 +2,11 @@ package main.java.GeneticAlgorithm;
 
 public class GeneticAlgorithmConfig {
 	
-	private int PopulationSize = 5;
+	private int PopulationSize = 100;
 	private int MaximumEvolutions = 500;
 	private int RequiredParentCount = 2;
-	private double CrossoverProbability = 0.5;
-	private double MutationProbability = 0.5;
+	private double CrossoverProbability = 0.2;
+	private double MutationProbability = 0.2;
 	
 	public int getPopulationSize() {
 		return PopulationSize;

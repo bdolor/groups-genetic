@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public interface ISolution<T> {
 	
-	T[] FindSolutions(ArrayList<T> population);
+	ArrayList<T> getSolutions(ArrayList<T> population);
+	T getFittestSolution(ArrayList<T> population);
 
 }
