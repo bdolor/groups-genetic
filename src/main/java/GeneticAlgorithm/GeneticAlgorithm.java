@@ -22,7 +22,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	public void Evolve() throws GeneticAlgorithmException {
 
-		if (!this.isValidConfiguraiton()) {
+		if (!this.isValidConfiguration()) {
 			throw new GeneticAlgorithmException("Genetic Algorithm not initalized correctly.");
 		}
 
@@ -99,7 +99,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				this.Solution.getFittestSolution(population).getFitness()));
 	}
 
-	protected Boolean isValidConfiguraiton() {
+	protected Boolean isValidConfiguration() {
 		return this.Config != null && this.Factory != null && this.CrossOver != null && this.Mutation != null
 				&& this.Select != null && this.Solution != null;
 	}
