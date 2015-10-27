@@ -5,8 +5,13 @@ import main.java.GeneticAlgorithm.Binomial.BinomialFactory;
 import main.java.GeneticAlgorithm.Binomial.BinomialSolution;
 import main.java.GeneticAlgorithm.Common.BitInversionMutation;
 import main.java.GeneticAlgorithm.Common.GeneticAlgorithmException;
+import main.java.GeneticAlgorithm.Common.PermutationCrossover;
+import main.java.GeneticAlgorithm.Common.PermutationMutation;
 import main.java.GeneticAlgorithm.Common.RouletteSelect;
 import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
+import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
+import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsFactory;
+import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsSolution;
 
 public class Program {
 
@@ -19,7 +24,29 @@ public class Program {
 		System.out.println();
 		System.out.println();
 		
-		Program.RunBinomialSample();
+		Program.RunStudentGroup();
+		//Program.RunBinomialSample();
+		
+	}
+	
+	private static void RunStudentGroup() {
+		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
+		
+		GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<StudentGroups>();
+		
+		ga.Config = config;
+		ga.CrossOver = new PermutationCrossover<StudentGroups>();
+		ga.Mutation = new PermutationMutation<StudentGroups>();
+		ga.Select = new RouletteSelect<StudentGroups>();
+		ga.Solution = new StudentGroupsSolution<StudentGroups>();
+		ga.Factory = new StudentGroupsFactory<StudentGroups>();
+				
+		try {
+			ga.Evolve();
+		} catch (GeneticAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
 		
 	}
 	

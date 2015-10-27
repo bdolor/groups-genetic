@@ -15,14 +15,14 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	protected GeneticAlgorithmConfig Config;
 	protected IFactory<T> Factory;
-	protected ICrossOver<T> CrossOver; 
+	protected ICrossOver<T> CrossOver;
 	protected IMutation<T> Mutation;
 	protected ISelect<T> Select;
 	protected ISolution<T> Solution;
 
 	public void Evolve() throws GeneticAlgorithmException {
 
-		if (!this.isValidConfiguration()) {
+		if (!this.isValidConfiguraiton()) {
 			throw new GeneticAlgorithmException("Genetic Algorithm not initalized correctly.");
 		}
 
@@ -45,10 +45,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				populationFitness[i] = population.get(i).getFitness();
 				totalFitness += populationFitness[i];
 			}
-			
-			System.out.println(String.format("Generation %d has average fitness %f  Fittest solution is %f", evolution,
-					totalFitness / this.Config.getPopulationSize(),
-					this.Solution.getFittestSolution(population).getFitness()));
 
 			// Build new generation
 			ArrayList<T> newGeneration = new ArrayList<T>();
@@ -75,19 +71,30 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					mutatedOffspring = offspring;
 				}
 
-				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
+				for (int i = 0; i < mutatedOffspring.length; i++) {
 					if (newGeneration.size() < this.Config.getPopulationSize()) {
 						newGeneration.add(mutatedOffspring[i]);
 					}
 				}
 			}
 
+			// Log generation stats
+			totalFitness = 0;
+			int invalidSolutions = 0;
+			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+				totalFitness += population.get(i).getFitness();
+				if (0d == population.get(i).getFitness()) {
+					invalidSolutions++;
+				}
+			}
+			System.out.println(String.format(
+					"Generation %d:   {avg fitness = %f}, {best fitness = %f}, {invalid solutions = %d}, {crossover = %d}, {mutations = %d}",
+					evolution, totalFitness / this.Config.getPopulationSize(),
+					this.Solution.getFittestSolution(population).getFitness(), invalidSolutions, crossoverCount,
+					mutationCount));
+
 			// Find solutions
 			ArrayList<T> solutions = this.Solution.getSolutions(newGeneration);
-
-			System.out.println(
-					String.format("New generation evolved through %d crossover and %d mutations, having %d solutions",
-							crossoverCount, mutationCount, solutions.size()));
 
 			// Check terminating condition
 			isComplete = solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
@@ -99,7 +106,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				this.Solution.getFittestSolution(population).getFitness()));
 	}
 
-	protected Boolean isValidConfiguration() {
+	protected Boolean isValidConfiguraiton() {
 		return this.Config != null && this.Factory != null && this.CrossOver != null && this.Mutation != null
 				&& this.Select != null && this.Solution != null;
 	}

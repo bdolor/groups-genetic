@@ -19,17 +19,21 @@ public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 			sumFitness += fitness[i];
 		}
 
-		for (int i = 0; i < parentCount; i++) {
-			
-			int r = (int) (Math.random() * sumFitness);
-			
-			double sumSelection = 0;
-			
-			for (int j = 0; j < fitness.length; j++) {				
-				sumSelection += fitness[j];			
-				if (sumSelection > r) {
-					parents[i] = population.get(j);
-					break;
+		// Random parents when sumfitness = 0, otherwise roulette will always select first chromosome.
+		if (sumFitness == 0) {
+			for (int i = 0; i < parentCount; i++) {
+				parents[i] = population.get((int) (Math.random() * sumFitness));
+			}
+		} else {
+			for (int i = 0; i < parentCount; i++) {
+				int r = (int) (Math.random() * sumFitness);
+				double sumSelection = 0;
+				for (int j = 0; j < fitness.length; j++) {
+					sumSelection += fitness[j];
+					if (sumSelection >= r) {
+						parents[i] = population.get(j);
+						break;
+					}
 				}
 			}
 		}
