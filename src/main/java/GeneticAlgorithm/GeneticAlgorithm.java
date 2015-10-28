@@ -26,7 +26,12 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			throw new GeneticAlgorithmException("Genetic Algorithm not initalized correctly.");
 		}
 
-		// Initialize population
+		/**
+		 * Initialize population.
+		 * 
+		 * If PopulationSize = 50 and MAXIMUM_STUDENTS = 512
+		 * population = ArrayList[50][512]
+		 */
 		ArrayList<T> population = new ArrayList<T>();
 		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 			population.add(this.Factory.CreateChromosome());
@@ -38,7 +43,13 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		int evolution = 1;
 		while (!isComplete) {
 
-			// Calculate population fitness
+			/**
+			 * Calculate population fitness.
+			 * 
+			 * Creates an array of fitness values for each of the group arrangement solutions
+			 * in a population of solutions, also sums the total fitness for the entire population 
+			 * of group arrangement solutions.
+			 */
 			double totalFitness = 0;
 			double[] populationFitness = new double[this.Config.getPopulationSize()];
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {

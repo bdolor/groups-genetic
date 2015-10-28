@@ -17,6 +17,12 @@ public abstract class PermutationChromosome implements IChromosome<int[]>{
 		this.setPermutationEncoding(groups);
 	}
 
+	/**
+	 * Creates an array with length = PermutationLength
+	 * with random values within that range.
+	 * 
+	 * @return Array randomOrder
+	 */
 	protected int[] getRandomGroup() {
 		int[] randomOrder = new int[this.PermutationLength];
 

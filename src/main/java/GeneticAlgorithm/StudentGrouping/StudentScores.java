@@ -5,6 +5,12 @@ import java.util.Collections;
 
 public class StudentScores {
 
+	/**
+	 * Given a studentId, sums up the score for that student
+	 * 
+	 * @param studentId
+	 * @return 
+	 */
 	public static int getSumScore(int studentId) {
 		int scores[] = StudentScores.Scores[studentId - 1];
 		int sum = 0;
@@ -14,6 +20,12 @@ public class StudentScores {
 		return sum;
 	}
 	
+	/**
+	 * Returns the score of student with studentId
+	 * 
+	 * @param studentId
+	 * @return 
+	 */
 	public static int[] getScores(int studentId) {
 		return StudentScores.Scores[studentId - 1];
 	}
