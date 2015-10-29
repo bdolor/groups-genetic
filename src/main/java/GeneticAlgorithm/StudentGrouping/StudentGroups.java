@@ -22,7 +22,7 @@ public class StudentGroups extends PermutationChromosome {
 	 * Loop must iterate through the entire 'class' of grouped students to get an
 	 * accurate measure of the overall heterogeneity of all groups in that class.
 	 * 
-	 * @return double sumGh - the sum of all GH of only valid groups 
+	 * @return sumGh double - the sum of all GH of only valid groups 
 	 */
 	@Override
 	public double getFitness() {

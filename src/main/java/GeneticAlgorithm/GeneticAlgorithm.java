@@ -57,15 +57,27 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				totalFitness += populationFitness[i];
 			}
 
-			// Build new generation
+			/**
+			 * Build new generation, two at a time to max population size.
+			 * 
+			 * Grab two of the 'best' parents, 
+			 * create two 'offspring' (crossover)
+			 * mutate the two 'offspring' 
+			 * add them to the new Generation until max population size
+			 */ 
+			
 			ArrayList<T> newGeneration = new ArrayList<T>();
 			int crossoverCount = 0;
 			int mutationCount = 0;
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
-
+				
+				// Select the best 'individuals' within a population
 				T[] parents = this.Select.GetParents(population, populationFitness,
 						this.Config.getRequiredParentCount());
-
+				
+				// Crossover is only applied on a random basis, 
+				// that is, if a random number is less that 0.3 = CrossoverProbability
+				// @see GeneticAlgorithmConfig.java
 				T[] offspring = null;
 				if (Math.random() < this.Config.getCrossoverProbability()) {
 					offspring = this.CrossOver.CrossOver(parents);
@@ -73,7 +85,10 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				} else {
 					offspring = parents;
 				}
-
+				
+				// Mutation only applied on a random basis, 
+				// that is, if a random number is less than 0.3 = MutationProbability
+				// @see GeneticAlgorithmConfig.java
 				T[] mutatedOffspring = null;
 				if (Math.random() < this.Config.getMutationProbability()) {
 					mutatedOffspring = this.Mutation.Mutate(offspring);
@@ -91,20 +106,33 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 			// Log generation stats
 			totalFitness = 0;
-			int invalidSolutions = 0;
+			//int invalidSolutions = 0;
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				totalFitness += population.get(i).getFitness();
-				if (0d == population.get(i).getFitness()) {
-					invalidSolutions++;
-				}
+//				if (0d == population.get(i).getFitness()) {
+//					invalidSolutions++;
+//				}
 			}
 			System.out.println(String.format(
-					"Generation %d:   {avg fitness = %f}, {best fitness = %f}, {invalid solutions = %d}, {crossover = %d}, {mutations = %d}",
+					"Generation %d:   {avg fitness = %f}, {best fitness = %f}, {crossover = %d}, {mutations = %d}",
 					evolution, totalFitness / this.Config.getPopulationSize(),
-					this.Solution.getFittestSolution(population).getFitness(), invalidSolutions, crossoverCount,
+					this.Solution.getFittestSolution(population).getFitness(), crossoverCount,
 					mutationCount));
-
+			
+			// need the index of the best grouping (winner)
+			int winner = this.Solution.getFittestSolutionIndex(population);
+			System.out.println(String.format("Index # of the fittest: %d", winner ));
+			
+			// need member IDs of the groups (in winner)
+			
+			// GH of each group in winner
+			
+			// highest Euclidean distance of each group (in winner)
+			
+			// sum of all GH values (in winner)
+			
 			// Find solutions
+			// new ArrayList
 			ArrayList<T> solutions = this.Solution.getSolutions(newGeneration);
 
 			// Check terminating condition

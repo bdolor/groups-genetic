@@ -5,6 +5,13 @@ import main.java.GeneticAlgorithm.Interfaces.IMutation;
 
 public class PermutationMutation <T extends IChromosome<int[]>> implements IMutation<T>  {
 
+	/**
+	 * Randomly swap one student position in the class with another
+	 * 
+	 * @param offspring 
+	 * @return
+	 * @throws GeneticAlgorithmException 
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public T[] Mutate(T[] offspring) throws GeneticAlgorithmException {
@@ -17,6 +24,7 @@ public class PermutationMutation <T extends IChromosome<int[]>> implements IMuta
 			int r1 = (int) (Math.random() * childEncoding.length);
 			int r2 = (int) (Math.random() * childEncoding.length);
 			
+			// randomly swap only student position in the class with another
 			int temp = childEncoding[r1];
 			childEncoding[r1] = childEncoding[r2];
 			childEncoding[r2] = temp;

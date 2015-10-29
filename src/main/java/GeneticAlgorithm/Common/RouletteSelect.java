@@ -8,6 +8,16 @@ import main.java.GeneticAlgorithm.Interfaces.ISelect;
 @SuppressWarnings("rawtypes")
 public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 
+	/**
+	 * Calculate the sum of all GH fitness in a population
+	 * Generate a random number within a range of that number
+	 * Get the first two numbers that have a GH fitness above that number.
+	 * 
+	 * @param population ArrayList 
+	 * @param fitness double
+	 * @param parentCount integer
+	 * @return parents Array
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public T[] GetParents(ArrayList<T> population, double[] fitness, int parentCount) {
@@ -25,6 +35,11 @@ public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 				parents[i] = population.get((int) (Math.random() * sumFitness));
 			}
 		} else {
+			/**
+			 * calculate average fitness sum, generate 
+			 * a random number within a range of that average number, 
+			 * select the first two numbers with a fitness score above that
+			 */
 			for (int i = 0; i < parentCount; i++) {
 				int r = (int) (Math.random() * sumFitness);
 				double sumSelection = 0;
