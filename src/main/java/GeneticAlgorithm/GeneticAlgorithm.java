@@ -106,16 +106,19 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 			// Log generation stats
 			totalFitness = 0;
-			//int invalidSolutions = 0;
+			int convergence = 0;
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				totalFitness += population.get(i).getFitness();
-//				if (0d == population.get(i).getFitness()) {
-//					invalidSolutions++;
-//				}
+				
+				// this is cheap, for testing it'll tell us if we've reached our goal
+				if (999999.999999 == population.get(i).getFitness()) {
+					convergence++;
+					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + i );					
+				}
 			}
 			System.out.println(String.format(
-					"Generation %d:   {avg fitness = %f}, {best fitness = %f}, {crossover = %d}, {mutations = %d}",
-					evolution, totalFitness / this.Config.getPopulationSize(),
+					"Generation %d:   {convergence: %d }, {avg fitness = %f}, {best fitness = %f}, {crossover = %d}, {mutations = %d}",
+					evolution, convergence, totalFitness / this.Config.getPopulationSize(),
 					this.Solution.getFittestSolution(population).getFitness(), crossoverCount,
 					mutationCount));
 			
@@ -130,7 +133,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			double [] eachGroupED = this.Solution.getEachGroupDistance(population, winnerClass);
 			
 			for(int i = 0; i < memberIDs.length; i++){
-				System.out.print("("+(i+1) +") [ED="+ eachGroupED[i] +"] [IDs=" + memberIDs[i] + "] " );
+				System.out.print("("+(i+1) +") [ED="+ eachGroupED[i] +"], [IDs=" + memberIDs[i] + "] " );
 			};
 			System.out.println(String.format("\n")); // line break
 			
@@ -144,7 +147,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			ArrayList<T> solutions = this.Solution.getSolutions(newGeneration);
 
 			// Check terminating condition
-			isComplete = solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
+			// stop if convergence is reached, or maximium evolutions is reached, 
+			// or somehow there are no solutions (safety)
+			isComplete = convergence > 0 || solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
 			population = newGeneration;
 			evolution++;
 		}

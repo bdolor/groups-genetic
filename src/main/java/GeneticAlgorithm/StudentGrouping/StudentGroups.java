@@ -25,8 +25,8 @@ public class StudentGroups extends PermutationChromosome {
 	 * @return sumGh double - the sum of all GH of only valid groups 
 	 */
 	@Override
-	public double getFitness() {
-
+	public double getFitness(){
+		Boolean allValidGroups = true;
 		double sumGh = 0;
 
 		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
@@ -39,6 +39,7 @@ public class StudentGroups extends PermutationChromosome {
 			if (StudentScores.getMaxDistance(s1, s2, s3, s4) <= 2) {
 				// only valid groups can contribute to the overall heterogenity of all groups
 				// continue on with loop to measure all valid groups
+				allValidGroups = false;
 				continue; 
 			}
 
@@ -46,10 +47,16 @@ public class StudentGroups extends PermutationChromosome {
 			if (gh < 0.5) {
 				// only valid groups can contribute to the overall heterogenity of all groups
 				// continue on with loop to measure all valid groups
+				allValidGroups = false;
 				continue;
 			}			
 
 			sumGh += gh;
+		}
+		
+		if( allValidGroups == true ){
+			// @TODO - do something better than this cheap shot
+			sumGh = 999999.999999;
 		}
 		
 		return sumGh;
