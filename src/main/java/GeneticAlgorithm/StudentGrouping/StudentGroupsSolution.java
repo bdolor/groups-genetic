@@ -8,7 +8,7 @@ import main.java.GeneticAlgorithm.Interfaces.ISolution;
 public class StudentGroupsSolution <T extends IChromosome<int[]>> implements ISolution<T> {
 	
 	/**
-	 * returns the index number of the best 'class' in a population of solutions
+	 * the index number of the best 'class' in a population of solutions
 	 */
 	public int bestIndex = 0;
 	
@@ -63,7 +63,21 @@ public class StudentGroupsSolution <T extends IChromosome<int[]>> implements ISo
 
 	}
 	
-	
+	/**
+	 * Get the Euclidean distance from each group from a specific 'class' 
+	 * of students
+	 * 
+	 * @param population
+	 * @param index
+	 * @return 
+	 */
+	@Override
+	public double[] getEachGroupDistance(ArrayList<T> population, int index) {
+		double[] result;
+		result = population.get(index).getEachGroupMaxDistance();
+
+		return result;
+	}
 	
 	
 }

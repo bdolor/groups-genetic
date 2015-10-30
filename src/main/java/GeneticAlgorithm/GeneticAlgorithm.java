@@ -123,16 +123,18 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			int winnerClass = this.Solution.getFittestSolutionIndex();
 			//System.out.println(String.format("Index # of the fittest: %d", winnerClass ));
 			
-			// need member IDs of the groups (in winner class)
-			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
-			for(int i = 0; i < memberIDs.length; i++){
-				System.out.print("G("+(i+1) +")" + memberIDs[i] + " " );
-			};
-			System.out.println(String.format("")); 
-			
-			// GH of each group in winner
-			
+			// need to output member IDs of the groups (in winner class)
 			// highest Euclidean distance of each group (in winner class)
+			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
+			double [] eachGroupED = this.Solution.getEachGroupDistance(population, winnerClass);
+			
+			for(int i = 0; i < memberIDs.length; i++){
+				System.out.print("("+(i+1) +") [ED="+ eachGroupED[i] +"] [IDs=" + memberIDs[i] + "] " );
+			};
+			System.out.println(String.format("\n")); // line break
+			
+						
+			// need to output GH of each group (in winner class)
 			
 			// sum of all GH values (in winner class)
 			
