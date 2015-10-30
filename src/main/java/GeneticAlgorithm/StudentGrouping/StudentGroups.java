@@ -59,4 +59,36 @@ public class StudentGroups extends PermutationChromosome {
 	public int[] getEncoding() {
 		return this.getPermutationEncoding();
 	}
+	
+	/**
+	 * Required for the output
+	 * 
+	 * @return Array  
+	 */
+	@Override
+	public String[] getMembers() {
+		int dimension1 = StudentGroups.MAXIMUM_STUDENTS / 4;
+		String[] members = new String[dimension1];
+
+		// loop through bestGroup to get individual members
+		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
+
+			int i1 = this.getEncoding()[(i * 4)];
+			int i2 = this.getEncoding()[(i * 4) + 1];
+			int i3 = this.getEncoding()[(i * 4) + 2];
+			int i4 = this.getEncoding()[(i * 4) + 3];
+
+			String s1 = Integer.toString(i1);
+			String s2 = Integer.toString(i2);
+			String s3 = Integer.toString(i3);
+			String s4 = Integer.toString(i4);
+
+			//members2[i][]=s1;
+			members[i] = s1 +","+ s2 + ","+ s3 +","+ s4;
+
+		}
+
+		return members;
+
+	}
 }

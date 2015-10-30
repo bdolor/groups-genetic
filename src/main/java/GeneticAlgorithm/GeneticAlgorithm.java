@@ -71,7 +71,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			int mutationCount = 0;
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
 				
-				// Select the best 'individuals' within a population
+				// Select the best 'individuals' (student arrangement in a class) within a population
 				T[] parents = this.Select.GetParents(population, populationFitness,
 						this.Config.getRequiredParentCount());
 				
@@ -119,17 +119,22 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					this.Solution.getFittestSolution(population).getFitness(), crossoverCount,
 					mutationCount));
 			
-			// need the index of the best grouping (winner)
-			int winner = this.Solution.getFittestSolutionIndex(population);
-			System.out.println(String.format("Index # of the fittest: %d", winner ));
+			// need the index of the best grouping (winner class)
+			int winnerClass = this.Solution.getFittestSolutionIndex(population);
+			//System.out.println(String.format("Index # of the fittest: %d", winner ));
 			
-			// need member IDs of the groups (in winner)
+			// need member IDs of the groups (in winner class)
+			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
+			for(int i = 0; i < memberIDs.length; i++){
+				System.out.print("G("+(i+1) +")" + memberIDs[i] + " " );
+			};
+			System.out.println(String.format("")); 
 			
 			// GH of each group in winner
 			
-			// highest Euclidean distance of each group (in winner)
+			// highest Euclidean distance of each group (in winner class)
 			
-			// sum of all GH values (in winner)
+			// sum of all GH values (in winner class)
 			
 			// Find solutions
 			// new ArrayList

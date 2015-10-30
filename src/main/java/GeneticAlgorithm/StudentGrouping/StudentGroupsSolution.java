@@ -49,6 +49,24 @@ public class StudentGroupsSolution <T extends IChromosome<int[]>> implements ISo
 
 		return bestIndex;
 	}
+
+	/**
+	 * Must get all the member IDs of a group in an entire 'class'
+	 * 
+	 * @param population
+	 * @param index
+	 * @return 
+	 */
+	@Override
+	public String[] getMembersOfGroup(ArrayList<T> population, int index) {
+		String[] result;
+		result = population.get(index).getMembers();
+
+		return result;
+
+	}
+	
+	
 	
 	
 }
