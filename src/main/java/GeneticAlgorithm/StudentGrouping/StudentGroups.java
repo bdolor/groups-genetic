@@ -122,4 +122,23 @@ public class StudentGroups extends PermutationChromosome {
 		return eachGroupMaxDistance;
 
 	}
+
+	@Override
+	public double[] getEachGroupGH() {
+		double[] eachGroupGH = new double[(StudentGroups.MAXIMUM_STUDENTS / 4)];
+		// loop through best group to get individual members
+		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
+
+			int s1 = this.getEncoding()[(i * 4)];
+			int s2 = this.getEncoding()[(i * 4) + 1];
+			int s3 = this.getEncoding()[(i * 4) + 2];
+			int s4 = this.getEncoding()[(i * 4) + 3];
+
+			// set the variable with values 
+			eachGroupGH[i] = StudentScores.getGhValue(s1, s2, s3, s4);
+		}
+
+		return eachGroupGH;
+	}
+	
 }

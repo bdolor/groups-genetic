@@ -9,4 +9,5 @@ public interface ISolution<T> {
 	int getFittestSolutionIndex();
 	String[] getMembersOfGroup(ArrayList<T> population, int index);
 	double[] getEachGroupDistance(ArrayList<T> population, int index);
+	double[] getEachGroupGH(ArrayList<T> population, int index);
 }

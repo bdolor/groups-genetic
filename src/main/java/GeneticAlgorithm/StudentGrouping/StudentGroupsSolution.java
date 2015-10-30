@@ -79,5 +79,20 @@ public class StudentGroupsSolution <T extends IChromosome<int[]>> implements ISo
 		return result;
 	}
 	
+	/**
+	 * Get GH of each group from a specific 'class' of students
+	 * 
+	 * @param population
+	 * @param index
+	 * @return 
+	 */
+	@Override
+	public double[] getEachGroupGH(ArrayList<T> population, int index) {
+		double[] result;
+		result = population.get(index).getEachGroupGH();
+		
+		return result;
+	}
+	
 	
 }

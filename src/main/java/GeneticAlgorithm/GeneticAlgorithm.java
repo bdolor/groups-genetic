@@ -19,10 +19,11 @@ public class GeneticAlgorithm<T extends IChromosome> {
 	protected IMutation<T> Mutation;
 	protected ISelect<T> Select;
 	protected ISolution<T> Solution;
+	protected double fittestSolution;
 
 	public void Evolve() throws GeneticAlgorithmException {
 
-		if (!this.isValidConfiguraiton()) {
+		if (!this.isValidConfiguration()) {
 			throw new GeneticAlgorithmException("Genetic Algorithm not initalized correctly.");
 		}
 
@@ -104,43 +105,36 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				}
 			}
 
-			// Log generation stats
+			/************** LOG RESULTS **************/
+			
 			totalFitness = 0;
 			int convergence = 0;
+			int convergenceIndex;
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-				totalFitness += population.get(i).getFitness();
-				
+
 				// this is cheap, for testing it'll tell us if we've reached our goal
 				if (999999.999999 == population.get(i).getFitness()) {
 					convergence++;
-					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + i );					
+					convergenceIndex = i;
+
+					// winner, winner, chicken diner
+					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
+					this.displayResults(population, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
+					break;
 				}
 			}
-			System.out.println(String.format(
-					"Generation %d:   {convergence: %d }, {avg fitness = %f}, {best fitness = %f}, {crossover = %d}, {mutations = %d}",
-					evolution, convergence, totalFitness / this.Config.getPopulationSize(),
-					this.Solution.getFittestSolution(population).getFitness(), crossoverCount,
-					mutationCount));
-			
-			// need the index of the best grouping (winner class)
+
+			/**
+			 * if no convergence, then we should display the fittest
+			 * using the index of the best grouping (winner class)
+			 */
 			int winnerClass = this.Solution.getFittestSolutionIndex();
-			//System.out.println(String.format("Index # of the fittest: %d", winnerClass ));
-			
-			// need to output member IDs of the groups (in winner class)
-			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
-			
-			// highest Euclidean distance of each group (in winner class)
-			double [] eachGroupED = this.Solution.getEachGroupDistance(population, winnerClass);
-			
-			for(int i = 0; i < memberIDs.length; i++){
-				System.out.print("("+(i+1) +") [ED="+ eachGroupED[i] +"], [IDs=" + memberIDs[i] + "] " );
-			};
-			System.out.println(String.format("\n")); // line break
-			
-						
-			// need to output GH of each group (in winner class)
-			
-			// sum of all GH values (in winner class)
+
+			this.displayResults(population, winnerClass, crossoverCount, mutationCount, convergence, evolution);
+
+			/**
+			 * ********** END LOG RESULTS ***********
+			 */
 			
 			// Find solutions
 			// new ArrayList
@@ -155,10 +149,51 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		}
 
 		System.out.println(String.format("Algorithm reached terminating condition.  Fittest solution is %f",
-				this.Solution.getFittestSolution(population).getFitness()));
+				this.fittestSolution));
 	}
 
-	protected Boolean isValidConfiguraiton() {
+	public void displayResults(ArrayList population, int index, int crossover, int mutation, int convergence, int evolution) {
+		// need to output member IDs of the groups (in winner class)
+		String[] memberIDs = this.Solution.getMembersOfGroup(population, index);
+
+		// highest Euclidean distance of each group (in winner class)
+		double[] eachGroupED = this.Solution.getEachGroupDistance(population, index);
+
+		// need to output GH of each group (in winner class)
+		double[] eachGroupGH = this.Solution.getEachGroupGH(population, index);
+
+		// sum of all GH values
+		double sumFitness = 0;
+		for (int i = 0; i < eachGroupGH.length; i++) {
+			sumFitness += eachGroupGH[i];
+		}
+		// track the actual fittestSolution
+		if (sumFitness > this.fittestSolution ) {
+			this.fittestSolution = sumFitness;
+		}
+
+		// loop 
+		System.out.println(String.format(
+			"Generation %d:   {convergence: %d }, {sum fitness = %f}, {crossover = %d}, {mutations = %d}",
+			evolution, convergence, sumFitness, crossover, mutation));
+		
+		// requirement outputs 
+		String GH = "";
+		String ED = "";
+		String ID = "";
+		for (int i = 0; i < memberIDs.length; i++) {
+			GH += "("+(i+1)+")[" + eachGroupGH[i] + "], ";
+			ED += "("+(i+1)+")[" + eachGroupED[i] + "], ";
+			ID += "("+(i+1)+")[" + memberIDs[i] + "], ";
+		};
+		System.out.println("GH: " + GH );
+		System.out.println("ED: " + ED );
+		System.out.println("ID: " + ID );
+		System.out.println("");
+	}
+	
+	
+	protected Boolean isValidConfiguration() {
 		return this.Config != null && this.Factory != null && this.CrossOver != null && this.Mutation != null
 				&& this.Select != null && this.Solution != null;
 	}

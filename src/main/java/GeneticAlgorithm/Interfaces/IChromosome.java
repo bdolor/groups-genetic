@@ -5,4 +5,5 @@ public interface IChromosome<T> {
 	T getEncoding();
 	String[] getMembers();
 	double[] getEachGroupMaxDistance();
+	double[] getEachGroupGH();
 }
