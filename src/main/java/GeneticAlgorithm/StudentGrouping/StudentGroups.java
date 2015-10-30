@@ -123,6 +123,11 @@ public class StudentGroups extends PermutationChromosome {
 
 	}
 
+	/**
+	 * Output each group's GH, or Goodness Heterogeneity
+	 * 
+	 * @return double
+	 */
 	@Override
 	public double[] getEachGroupGH() {
 		double[] eachGroupGH = new double[(StudentGroups.MAXIMUM_STUDENTS / 4)];

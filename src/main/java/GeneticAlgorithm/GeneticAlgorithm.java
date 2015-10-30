@@ -168,7 +168,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			sumFitness += eachGroupGH[i];
 		}
 		// track the actual fittestSolution
-		if (sumFitness > this.fittestSolution ) {
+		if (sumFitness > this.fittestSolution) {
 			this.fittestSolution = sumFitness;
 		}
 
@@ -176,19 +176,19 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		System.out.println(String.format(
 			"Generation %d:   {convergence: %d }, {sum fitness = %f}, {crossover = %d}, {mutations = %d}",
 			evolution, convergence, sumFitness, crossover, mutation));
-		
+
 		// requirement outputs 
 		String GH = "";
 		String ED = "";
 		String ID = "";
 		for (int i = 0; i < memberIDs.length; i++) {
-			GH += "("+(i+1)+")[" + eachGroupGH[i] + "], ";
-			ED += "("+(i+1)+")[" + eachGroupED[i] + "], ";
-			ID += "("+(i+1)+")[" + memberIDs[i] + "], ";
+			GH += "(" + (i + 1) + ")[" + eachGroupGH[i] + "], ";
+			ED += "(" + (i + 1) + ")[" + eachGroupED[i] + "], ";
+			ID += "(" + (i + 1) + ")[" + memberIDs[i] + "], ";
 		};
-		System.out.println("GH: " + GH );
-		System.out.println("ED: " + ED );
-		System.out.println("ID: " + ID );
+		System.out.println("GH: " + GH);
+		System.out.println("ED: " + ED);
+		System.out.println("ID: " + ID);
 		System.out.println("");
 	}
 	
