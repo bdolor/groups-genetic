@@ -120,8 +120,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					mutationCount));
 			
 			// need the index of the best grouping (winner class)
-			int winnerClass = this.Solution.getFittestSolutionIndex(population);
-			//System.out.println(String.format("Index # of the fittest: %d", winner ));
+			int winnerClass = this.Solution.getFittestSolutionIndex();
+			//System.out.println(String.format("Index # of the fittest: %d", winnerClass ));
 			
 			// need member IDs of the groups (in winner class)
 			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
