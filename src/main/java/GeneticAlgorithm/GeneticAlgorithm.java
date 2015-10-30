@@ -124,8 +124,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			//System.out.println(String.format("Index # of the fittest: %d", winnerClass ));
 			
 			// need to output member IDs of the groups (in winner class)
-			// highest Euclidean distance of each group (in winner class)
 			String[] memberIDs = this.Solution.getMembersOfGroup(population, winnerClass);
+			
+			// highest Euclidean distance of each group (in winner class)
 			double [] eachGroupED = this.Solution.getEachGroupDistance(population, winnerClass);
 			
 			for(int i = 0; i < memberIDs.length; i++){
