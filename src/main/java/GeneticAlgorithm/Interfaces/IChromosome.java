@@ -6,4 +6,5 @@ public interface IChromosome<T> {
 	String[] getMembers();
 	double[] getEachGroupMaxDistance();
 	double[] getEachGroupGH();
+	Boolean isAllValidGroups();
 }

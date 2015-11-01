@@ -111,26 +111,31 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			int convergence = 0;
 			int convergenceIndex;
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-
-				// this is cheap, for testing it'll tell us if we've reached our goal
-				if (999999.999999 == population.get(i).getFitness()) {
+				
+				// sum up fitness of a generation
+				populationFitness[i] = population.get(i).getFitness();
+				totalFitness += populationFitness[i];
+				
+				// check for convergence, notify 
+				if (population.get(i).isAllValidGroups()) {
 					convergence++;
 					convergenceIndex = i;
-
+					// average fitness level for all populations up to this point
+					double avg = totalFitness / i+1;
 					// winner, winner, chicken diner
 					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
-					this.displayResults(population, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
-					break;
+					this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
 				}
 			}
-
+			// average fitness level for the Generation
+			double avg = totalFitness / this.Config.getPopulationSize();
 			/**
 			 * if no convergence, then we should display the fittest
 			 * using the index of the best grouping (winner class)
 			 */
 			int winnerClass = this.Solution.getFittestSolutionIndex();
 
-			this.displayResults(population, winnerClass, crossoverCount, mutationCount, convergence, evolution);
+			this.displayResults(population, avg, totalFitness, winnerClass, crossoverCount, mutationCount, convergence, evolution);
 
 			/**
 			 * ********** END LOG RESULTS ***********
@@ -152,7 +157,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				this.fittestSolution));
 	}
 
-	public void displayResults(ArrayList population, int index, int crossover, int mutation, int convergence, int evolution) {
+	public void displayResults(ArrayList population, double avg, double total, int index, int crossover, int mutation, int convergence, int evolution) {
 		// need to output member IDs of the groups (in winner class)
 		String[] memberIDs = this.Solution.getMembersOfGroup(population, index);
 
@@ -174,8 +179,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 		// loop 
 		System.out.println(String.format(
-			"Generation %d:   {convergence: %d }, {sum fitness = %f}, {crossover = %d}, {mutations = %d}",
-			evolution, convergence, sumFitness, crossover, mutation));
+			"Generation %d:   {convergence: %d }, {avg gen fitness = %f}, {best fitness = %f}, {total gen fitness = %f}, {crossover = %d}, {mutations = %d}",
+			evolution, convergence, avg, sumFitness, total, crossover, mutation));
 
 		// requirement outputs 
 		String GH = "";

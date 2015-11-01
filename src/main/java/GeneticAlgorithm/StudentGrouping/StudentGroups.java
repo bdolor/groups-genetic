@@ -26,7 +26,6 @@ public class StudentGroups extends PermutationChromosome {
 	 */
 	@Override
 	public double getFitness(){
-		Boolean allValidGroups = true;
 		double sumGh = 0;
 
 		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
@@ -39,7 +38,6 @@ public class StudentGroups extends PermutationChromosome {
 			if (StudentScores.getMaxDistance(s1, s2, s3, s4) <= 2) {
 				// only valid groups can contribute to the overall heterogenity of all groups
 				// continue on with loop to measure all valid groups
-				allValidGroups = false;
 				continue; 
 			}
 
@@ -47,21 +45,15 @@ public class StudentGroups extends PermutationChromosome {
 			if (gh < 0.5) {
 				// only valid groups can contribute to the overall heterogenity of all groups
 				// continue on with loop to measure all valid groups
-				allValidGroups = false;
 				continue;
 			}			
 
 			sumGh += gh;
 		}
 		
-		if( allValidGroups == true ){
-			// @TODO - do something better than this cheap shot
-			sumGh = 999999.999999;
-		}
-		
 		return sumGh;
 	}
-
+	
 	@Override
 	public int[] getEncoding() {
 		return this.getPermutationEncoding();
@@ -144,6 +136,34 @@ public class StudentGroups extends PermutationChromosome {
 		}
 
 		return eachGroupGH;
+	}
+
+	@Override
+	public Boolean isAllValidGroups() {
+		Boolean allValidGroups = true;
+
+		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
+
+			int s1 = this.getEncoding()[(i * 4)];
+			int s2 = this.getEncoding()[(i * 4) + 1];
+			int s3 = this.getEncoding()[(i * 4) + 2];
+			int s4 = this.getEncoding()[(i * 4) + 3];
+
+			if (StudentScores.getMaxDistance(s1, s2, s3, s4) <= 2) {
+				// bail
+				allValidGroups = false;
+				break;
+			}
+
+			double gh = StudentScores.getGhValue(s1, s2, s3, s4);
+			if (gh < 0.5) {
+				// bail
+				allValidGroups = false;
+				break;
+			}
+		}
+
+		return allValidGroups;
 	}
 	
 }
