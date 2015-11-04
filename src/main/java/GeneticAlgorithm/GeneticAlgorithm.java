@@ -57,6 +57,18 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				populationFitness[i] = population.get(i).getFitness();
 				totalFitness += populationFitness[i];
 			}
+			// get the class with the fittest solution
+			T elite = this.Solution.getFittestSolution(population);
+			int best = this.Solution.getFittestSolutionIndex();
+
+			double[] eachGroupGH = this.Solution.getEachGroupGH(population, best);
+
+			// sum of all GH values
+			double maxFitness = 0.0;
+			for (int i = 0; i < eachGroupGH.length; i++) {
+				maxFitness += eachGroupGH[i];
+			}
+			double avgFitness = totalFitness / this.Config.getPopulationSize();
 			
 			/**
 			 * Build new generation, two at a time to max population size.
@@ -67,18 +79,28 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			 * add them to the new Generation until max population size
 			 */ 
 			
-			T elite = this.Solution.getFittestSolution(population);
 			ArrayList<T> newGeneration = new ArrayList<T>();
 			
-			// inject a little elitism into the new generation
+			// inject Elitism into the new generation
 			newGeneration.add(elite);
 			int crossoverCount = 0;
 			int mutationCount = 0;
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
 				
 				// Select the best 'individuals' (student arrangement in a class) within a population
-				T[] parents = this.Select.GetParents(population, populationFitness,
-						this.Config.getRequiredParentCount());
+				T[] parents = this.Select.GetParents(population, populationFitness, this.Config.getRequiredParentCount());
+				
+				/******** ADAPTIVE PROBABILITY **********/
+				
+				double parentFitness = this.Config.getRequiredParentCount();
+
+				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
+					parentFitness += parents[i].getFitness();
+				}
+				// set the crossover probability
+				this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness/2);
+				
+				/************ END **********/
 				
 				// Crossover is only applied on a random basis, 
 				// that is, if a random number is less that 0.3 = CrossoverProbability
@@ -128,7 +150,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					double avg = totalFitness / i+1;
 					// winner, winner, chicken diner
 					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
-					this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
+					//this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
 				}
 			}
 			// average fitness level for the Generation

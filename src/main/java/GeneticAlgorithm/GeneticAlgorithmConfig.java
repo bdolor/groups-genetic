@@ -14,8 +14,20 @@ public class GeneticAlgorithmConfig {
 	public double getCrossoverProbability() {
 		return CrossoverProbability;
 	}
-	public void setCrossoverProbability(double crossoverProbability) {
+	public void setCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
+		// adaptive probability
+		double fallback = 0.1;
+		double crossoverProbability;
+		
+		// CP = (max fitness - population fitness)/ (max fitness - avg fitness), CP <= 1.0
+		crossoverProbability = (maxFitness - parentFitness) / (maxFitness - avgFitness);
+		
+		// safety 
+		if (0 == crossoverProbability) {
+			crossoverProbability = fallback;
+		}
 		CrossoverProbability = crossoverProbability;
+
 	}
 	public double getMutationProbability() {
 		return MutationProbability;
