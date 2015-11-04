@@ -91,7 +91,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				T[] parents = this.Select.GetParents(population, populationFitness, this.Config.getRequiredParentCount());
 				
 				/******** ADAPTIVE PROBABILITY **********/
-				
 				double parentFitness = this.Config.getRequiredParentCount();
 
 				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
@@ -99,11 +98,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				}
 				// set the crossover probability
 				this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness/2);
-				
-				/************ END **********/
-				
+								
 				// Crossover is only applied on a random basis, 
-				// that is, if a random number is less that 0.3 = CrossoverProbability
+				// that is, if a random number is less that CrossoverProbability
 				// @see GeneticAlgorithmConfig.java
 				T[] offspring = null;
 				if (Math.random() < this.Config.getCrossoverProbability()) {
@@ -114,9 +111,13 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				}
 				
 				// Mutation only applied on a random basis, 
-				// that is, if a random number is less than 0.3 = MutationProbability
+				// that is, if a random number is less than MutationProbability
 				// @see GeneticAlgorithmConfig.java
 				T[] mutatedOffspring = null;
+				
+				/******** ADAPTIVE PROBABILITY **********/
+				this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness/2);
+				
 				if (Math.random() < this.Config.getMutationProbability()) {
 					mutatedOffspring = this.Mutation.Mutate(offspring);
 					mutationCount++;
@@ -150,7 +151,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					double avg = totalFitness / i+1;
 					// winner, winner, chicken diner
 					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
-					//this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
+					this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
 				}
 			}
 			// average fitness level for the Generation
@@ -172,9 +173,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			ArrayList<T> solutions = this.Solution.getSolutions(newGeneration);
 
 			// Check terminating condition
-			// stop if convergence is reached, or maximium evolutions is reached, 
+			// if maximium evolutions is reached, 
 			// or somehow there are no solutions (safety)
-			isComplete = convergence > 0 || solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
+			isComplete = solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
 			// reassign variable 
 			population = newGeneration;
 			evolution++;
