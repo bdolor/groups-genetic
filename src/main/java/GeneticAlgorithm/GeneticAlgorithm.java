@@ -57,7 +57,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				populationFitness[i] = population.get(i).getFitness();
 				totalFitness += populationFitness[i];
 			}
-
+			
 			/**
 			 * Build new generation, two at a time to max population size.
 			 * 
@@ -67,7 +67,11 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			 * add them to the new Generation until max population size
 			 */ 
 			
+			T elite = this.Solution.getFittestSolution(population);
 			ArrayList<T> newGeneration = new ArrayList<T>();
+			
+			// inject a little elitism into the new generation
+			newGeneration.add(elite);
 			int crossoverCount = 0;
 			int mutationCount = 0;
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
@@ -149,6 +153,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			// stop if convergence is reached, or maximium evolutions is reached, 
 			// or somehow there are no solutions (safety)
 			isComplete = convergence > 0 || solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
+			// reassign variable 
 			population = newGeneration;
 			evolution++;
 		}
