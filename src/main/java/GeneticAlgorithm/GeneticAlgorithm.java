@@ -61,13 +61,13 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			T elite = this.Solution.getFittestSolution(population);
 			int best = this.Solution.getFittestSolutionIndex();
 
-			double[] eachGroupGH = this.Solution.getEachGroupGH(population, best);
+			//double[] eachGroupGH = this.Solution.getEachGroupGH(population, best);
 
 			// sum of all GH values
 			double maxFitness = 0.0;
-			for (int i = 0; i < eachGroupGH.length; i++) {
-				maxFitness += eachGroupGH[i];
-			}
+			//for (int i = 0; i < eachGroupGH.length; i++) {
+			//	maxFitness += eachGroupGH[i];
+			//}
 			double avgFitness = totalFitness / this.Config.getPopulationSize();
 			
 			/**
@@ -197,9 +197,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 		// sum of all GH values
 		double sumFitness = 0;
-		for (int i = 0; i < eachGroupGH.length; i++) {
-			sumFitness += eachGroupGH[i];
-		}
+		//for (int i = 0; i < eachGroupGH.length; i++) {
+		//	sumFitness += eachGroupGH[i];
+		//}
 		// track the actual fittestSolution
 		if (sumFitness > this.fittestSolution) {
 			this.fittestSolution = sumFitness;
@@ -214,11 +214,11 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		String GH = "";
 		String ED = "";
 		String ID = "";
-		for (int i = 0; i < memberIDs.length; i++) {
-			GH += "(" + (i + 1) + ")[" + eachGroupGH[i] + "], ";
-			ED += "(" + (i + 1) + ")[" + eachGroupED[i] + "], ";
-			ID += "(" + (i + 1) + ")[" + memberIDs[i] + "], ";
-		};
+		//for (int i = 0; i < memberIDs.length; i++) {
+		//	GH += "(" + (i + 1) + ")[" + eachGroupGH[i] + "], ";
+		//	ED += "(" + (i + 1) + ")[" + eachGroupED[i] + "], ";
+		//	ID += "(" + (i + 1) + ")[" + memberIDs[i] + "], ";
+		//};
 		System.out.println("GH: " + GH);
 		System.out.println("ED: " + ED);
 		System.out.println("ID: " + ID);

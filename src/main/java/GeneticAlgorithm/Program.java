@@ -10,6 +10,9 @@ import main.java.GeneticAlgorithm.Common.PermutationCrossover;
 import main.java.GeneticAlgorithm.Common.PermutationMutation;
 import main.java.GeneticAlgorithm.Common.RouletteSelect;
 import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
+import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingChromosome;
+import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingCrossover;
+import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingMutation;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsFactory;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsSolution;
@@ -25,8 +28,9 @@ public class Program {
 		System.out.println();
 		System.out.println();
 		
-		Program.RunStudentGroup();
+		//Program.RunStudentGroup();
 		//Program.RunBinomialSample();
+		Program.RunGroupEncoding();
 		
 	}
 	
@@ -50,6 +54,27 @@ public class Program {
 			e.printStackTrace();
 		}				
 		
+	}
+	
+	private static void RunGroupEncoding() {
+		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
+		
+		GeneticAlgorithm<GroupEncodingChromosome> ga = new GeneticAlgorithm<GroupEncodingChromosome>();
+		
+		ga.Config = config;
+		ga.CrossOver = new GroupEncodingCrossover<GroupEncodingChromosome>();
+		ga.Mutation = new GroupEncodingMutation<GroupEncodingChromosome>();
+		ga.Select = new RouletteSelect<GroupEncodingChromosome>();
+		//ga.Select = new BinaryTournamentSelect<GroupEncodingChromosome>();
+		ga.Solution = new StudentGroupsSolution<GroupEncodingChromosome>();
+		ga.Factory = new GroupEncodingChromosome();
+				
+		try {
+			ga.Evolve();
+		} catch (GeneticAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
 	}
 	
 	private static void RunBinomialSample() {
