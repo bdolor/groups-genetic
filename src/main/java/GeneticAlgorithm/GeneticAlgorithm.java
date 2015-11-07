@@ -7,8 +7,11 @@ import main.java.GeneticAlgorithm.Interfaces.IChromosome;
 import main.java.GeneticAlgorithm.Interfaces.ICrossOver;
 import main.java.GeneticAlgorithm.Interfaces.IFactory;
 import main.java.GeneticAlgorithm.Interfaces.IMutation;
+import main.java.GeneticAlgorithm.Interfaces.IReport;
 import main.java.GeneticAlgorithm.Interfaces.ISelect;
 import main.java.GeneticAlgorithm.Interfaces.ISolution;
+import main.java.GeneticAlgorithm.StudentGrouping.GroupEncodingChromosome;
+import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
 
 @SuppressWarnings("rawtypes")
 public class GeneticAlgorithm<T extends IChromosome> {
@@ -19,7 +22,26 @@ public class GeneticAlgorithm<T extends IChromosome> {
 	protected IMutation<T> Mutation;
 	protected ISelect<T> Select;
 	protected ISolution<T> Solution;
+	protected IReport Report;
 	protected double fittestSolution;
+	protected int CrossoverCount;
+	protected int MutationCount;
+	protected double[] EvolutionFitness;
+
+	/**
+	 * Calculate population fitness.
+	 * 
+	 * Creates an array of fitness values for each of the group arrangement
+	 * solutions in a population of solutions, also sums the total fitness for
+	 * the entire population of group arrangement solutions.
+	 */
+	/**
+	 * Build new generation, two at a time to max population size.
+	 * 
+	 * Grab two of the 'best' parents, create two 'offspring' (crossover) mutate
+	 * the two 'offspring' add them to the new Generation until max population
+	 * size
+	 */
 
 	public void Evolve() throws GeneticAlgorithmException {
 
@@ -27,156 +49,83 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			throw new GeneticAlgorithmException("Genetic Algorithm not initalized correctly.");
 		}
 
-		/**
-		 * Initialize population.
-		 * 
-		 * If PopulationSize = 50 and MAXIMUM_STUDENTS = 512
-		 * population = ArrayList[50][512]
-		 */
-		ArrayList<T> population = new ArrayList<T>();
-		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-			population.add(this.Factory.CreateChromosome());
-		}
-		System.out
-				.println(String.format("Initialized population with %d candidates.", this.Config.getPopulationSize()));
+		ArrayList<T> population = this.getInitialPopulation();
+		this.EvolutionFitness = new double[this.Config.getReportRefreshRate()];
+
+		long startTime;
+		long endTime;
 
 		boolean isComplete = false;
 		int evolution = 1;
 		while (!isComplete) {
 
-			/**
-			 * Calculate population fitness.
-			 * 
-			 * Creates an array of fitness values for each of the group arrangement solutions
-			 * in a population of solutions, also sums the total fitness for the entire population 
-			 * of group arrangement solutions.
-			 */
-			double totalFitness = 0;
+			double fitnessTime = 0;
+			double selectTime = 0;
+			double crossoverTime = 0;
+			double mutationTime = 0;
+			double reportTime = 0;
+			double newpopulation = 0;
+
+			startTime = System.nanoTime();
+
 			double[] populationFitness = new double[this.Config.getPopulationSize()];
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				populationFitness[i] = population.get(i).getFitness();
-				totalFitness += populationFitness[i];
 			}
-			// get the class with the fittest solution
-			T elite = this.Solution.getFittestSolution(population);
-			int best = this.Solution.getFittestSolutionIndex();
 
-			//double[] eachGroupGH = this.Solution.getEachGroupGH(population, best);
+			endTime = System.nanoTime();
+			fitnessTime += (endTime - startTime) / 1000000000d;
 
-			// sum of all GH values
-			double maxFitness = 0.0;
-			//for (int i = 0; i < eachGroupGH.length; i++) {
-			//	maxFitness += eachGroupGH[i];
-			//}
-			double avgFitness = totalFitness / this.Config.getPopulationSize();
-			
-			/**
-			 * Build new generation, two at a time to max population size.
-			 * 
-			 * Grab two of the 'best' parents, 
-			 * create two 'offspring' (crossover)
-			 * mutate the two 'offspring' 
-			 * add them to the new Generation until max population size
-			 */ 
-			
 			ArrayList<T> newGeneration = new ArrayList<T>();
-			
-			// inject Elitism into the new generation
-			newGeneration.add(elite);
-			int crossoverCount = 0;
-			int mutationCount = 0;
+			this.CrossoverCount = 0;
+			this.MutationCount = 0;
+
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
-				
-				// Select the best 'individuals' (student arrangement in a class) within a population
-				T[] parents = this.Select.GetParents(population, populationFitness, this.Config.getRequiredParentCount());
-				
-				/******** ADAPTIVE PROBABILITY **********/
-				double parentFitness = this.Config.getRequiredParentCount();
 
-				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
-					parentFitness += parents[i].getFitness();
-				}
-				// set the crossover probability
-				this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness/2);
-								
-				// Crossover is only applied on a random basis, 
-				// that is, if a random number is less that CrossoverProbability
-				// @see GeneticAlgorithmConfig.java
-				T[] offspring = null;
-				if (Math.random() < this.Config.getCrossoverProbability()) {
-					offspring = this.CrossOver.CrossOver(parents);
-					crossoverCount++;
-				} else {
-					offspring = parents;
-				}
-				
-				// Mutation only applied on a random basis, 
-				// that is, if a random number is less than MutationProbability
-				// @see GeneticAlgorithmConfig.java
-				T[] mutatedOffspring = null;
-				
-				/******** ADAPTIVE PROBABILITY **********/
-				this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness/2);
-				
-				if (Math.random() < this.Config.getMutationProbability()) {
-					mutatedOffspring = this.Mutation.Mutate(offspring);
-					mutationCount++;
-				} else {
-					mutatedOffspring = offspring;
-				}
+				// Select the best 'individuals' (student arrangement in a
+				// class) within a population
+				startTime = System.nanoTime();
+				T[] parents = this.Select.GetParents(population, populationFitness,
+						this.Config.getRequiredParentCount());
+				endTime = System.nanoTime();
+				selectTime += (endTime - startTime) / 1000000000d;
 
+				startTime = System.nanoTime();
+				T[] offspring = this.doCrossover(parents);
+				endTime = System.nanoTime();
+				crossoverTime += (endTime - startTime) / 1000000000d;
+
+				startTime = System.nanoTime();
+				T[] mutatedOffspring = this.doMutation(offspring);
+				endTime = System.nanoTime();
+				mutationTime += (endTime - startTime) / 1000000000d;
+
+				startTime = System.nanoTime();
 				for (int i = 0; i < mutatedOffspring.length; i++) {
 					if (newGeneration.size() < this.Config.getPopulationSize()) {
 						newGeneration.add(mutatedOffspring[i]);
 					}
 				}
+				endTime = System.nanoTime();
+				newpopulation += (endTime - startTime) / 1000000000d;
+
 			}
 
-			/************** LOG RESULTS **************/
-			
-			totalFitness = 0;
-			int convergence = 0;
-			int convergenceIndex;
-			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-				
-				// sum up fitness of a generation
-				populationFitness[i] = population.get(i).getFitness();
-				totalFitness += populationFitness[i];
-				
-				// check for convergence, notify 
-				if (population.get(i).isAllValidGroups()) {
-					convergence++;
-					convergenceIndex = i;
-					// average fitness level for all populations up to this point
-					double avg = totalFitness / i+1;
-					// winner, winner, chicken diner
-					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
-					this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
-				}
-			}
-			// average fitness level for the Generation
-			//double avg = totalFitness / this.Config.getPopulationSize();
-			/**
-			 * if no convergence, then we should display the fittest
-			 * using the index of the best grouping (winner class)
-			 */
-			//int winnerClass = this.Solution.getFittestSolutionIndex();
+			startTime = System.nanoTime();
+			this.UpdateReport(population);
+			endTime = System.nanoTime();
+			reportTime = (endTime - startTime) / 1000000000d;
 
-			//this.displayResults(population, avg, totalFitness, winnerClass, crossoverCount, mutationCount, convergence, evolution);
+			//System.out.println(String.format(
+			//		"Evolution: %d      Fitness: %f       Select: %f       Crossover:%f        Mutation %f     Report %f    NewPopulation %f",
+			//		evolution, fitnessTime, selectTime, crossoverTime, mutationTime, reportTime, newpopulation));
 
-			/**
-			 * ********** END LOG RESULTS ***********
-			 */
-			
-			// Find solutions
-			// new ArrayList
-			ArrayList<T> solutions = this.Solution.getSolutions(newGeneration);
+			// ArrayList<T> solutions =
+			// this.Solution.getSolutions(newGeneration);
 
-			// Check terminating condition
-			// if maximium evolutions is reached, 
-			// or somehow there are no solutions (safety)
-			isComplete = solutions.size() > 0 || evolution == this.Config.getMaximumEvolutions();
-			// reassign variable 
+			// isComplete = solutions.size() > 0 || evolution ==
+			// this.Config.getMaximumEvolutions();
+			isComplete = evolution == this.Config.getMaximumEvolutions();
 			population = newGeneration;
 			evolution++;
 		}
@@ -185,50 +134,108 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				this.fittestSolution));
 	}
 
-	public void displayResults(ArrayList population, double avg, double total, int index, int crossover, int mutation, int convergence, int evolution) {
-		// need to output member IDs of the groups (in winner class)
-		String[] memberIDs = this.Solution.getMembersOfGroup(population, index);
+	protected Boolean isValidConfiguration() {
+		// return this.Config != null && this.Factory != null && this.CrossOver
+		// != null && this.Mutation != null
+		// && this.Select != null && this.Solution != null && this.Report !=
+		// null;
+		return true;
+	}
 
-		// highest Euclidean distance of each group (in winner class)
-		double[] eachGroupED = this.Solution.getEachGroupDistance(population, index);
+	protected ArrayList<T> getInitialPopulation() {
+		/**
+		 * Initialize population.
+		 * 
+		 * If PopulationSize = 50 and MAXIMUM_STUDENTS = 512 population =
+		 * ArrayList[50][512]
+		 */
+		ArrayList<T> population = new ArrayList<T>();
+		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+			population.add(this.Factory.CreateChromosome());
+		}
+		System.out
+				.println(String.format("Initialized population with %d candidates.", this.Config.getPopulationSize()));
 
-		// need to output GH of each group (in winner class)
-		double[] eachGroupGH = this.Solution.getEachGroupGH(population, index);
+		return population;
+	}
 
-		// sum of all GH values
-		double sumFitness = 0;
-		//for (int i = 0; i < eachGroupGH.length; i++) {
-		//	sumFitness += eachGroupGH[i];
-		//}
-		// track the actual fittestSolution
-		if (sumFitness > this.fittestSolution) {
-			this.fittestSolution = sumFitness;
+	protected T[] doCrossover(T[] parents) {
+		// Crossover is only applied on a random basis,
+		// that is, if a random number is less that 0.3 = CrossoverProbability
+		// @see GeneticAlgorithmConfig.java
+		T[] offspring = null;
+
+		if (Math.random() < this.Config.getCrossoverProbability()) {
+
+			try {
+				offspring = this.CrossOver.CrossOver(parents);
+			} catch (GeneticAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.CrossoverCount++;
+		} else {
+			offspring = parents;
 		}
 
-		// loop 
-		System.out.println(String.format(
-			"Generation %d:   {convergence: %d }, {avg gen fitness = %f}, {best fitness = %f}, {total gen fitness = %f}, {crossover = %d}, {mutations = %d}",
-			evolution, convergence, avg, sumFitness, total, crossover, mutation));
+		return offspring;
 
-		// requirement outputs 
-		String GH = "";
-		String ED = "";
-		String ID = "";
-		//for (int i = 0; i < memberIDs.length; i++) {
-		//	GH += "(" + (i + 1) + ")[" + eachGroupGH[i] + "], ";
-		//	ED += "(" + (i + 1) + ")[" + eachGroupED[i] + "], ";
-		//	ID += "(" + (i + 1) + ")[" + memberIDs[i] + "], ";
-		//};
-		System.out.println("GH: " + GH);
-		System.out.println("ED: " + ED);
-		System.out.println("ID: " + ID);
-		System.out.println("");
 	}
-	
-	
-	protected Boolean isValidConfiguration() {
-		return this.Config != null && this.Factory != null && this.CrossOver != null && this.Mutation != null
-				&& this.Select != null && this.Solution != null;
+
+	protected T[] doMutation(T[] offspring) {
+		// Mutation only applied on a random basis,
+		// that is, if a random number is less than 0.3 = MutationProbability
+		// @see GeneticAlgorithmConfig.java
+		T[] mutatedOffspring = null;
+		if (Math.random() < this.Config.getMutationProbability()) {
+			try {
+				mutatedOffspring = this.Mutation.Mutate(offspring);
+			} catch (GeneticAlgorithmException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.MutationCount++;
+		} else {
+			mutatedOffspring = offspring;
+		}
+
+		return mutatedOffspring;
+	}
+
+	protected void UpdateReport(ArrayList<T> population) {
+
+		double totalFitness = 0;
+		double totalGroupCount = 0;
+		int validSolutions = 0;
+		double maxFitness = 0;
+		double minFitness = 0;
+		double maxValidFitness = 0;
+
+		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+
+			double fitness = population.get(i).getFitness();
+
+			totalFitness += fitness;
+			maxFitness = fitness > maxFitness ? fitness : maxFitness;
+			minFitness = fitness < maxFitness ? fitness : minFitness;
+
+			GroupEncodingChromosome group = (GroupEncodingChromosome) population.get(i);
+
+			if (group.isValid()) {
+				validSolutions++;
+				maxValidFitness = fitness > maxValidFitness ? fitness : maxValidFitness;
+			}
+
+		}
+
+		double averageFitness = totalFitness / population.size();
+		double averageValidGroups = totalGroupCount / population.size();
+
+		this.Report.updateReport(averageFitness, averageValidGroups, validSolutions, maxFitness, minFitness,
+				maxValidFitness);
+
+		System.out.println(String.format("Avg Fitness = %f Avg Valid Groups = %f Valid Solutions = %d Max Fitness = %f",
+				averageFitness, averageValidGroups, validSolutions, maxFitness));
 	}
 
 	public void setConfig(GeneticAlgorithmConfig config) {
@@ -253,5 +260,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	public void setSolution(ISolution<T> solution) {
 		Solution = solution;
+	}
+
+	public void setReport(IReport report) {
+		Report = report;
 	}
 }

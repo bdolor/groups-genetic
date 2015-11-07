@@ -28,31 +28,37 @@ public class BinomialChromosome extends BinaryChromosome {
 
 	@Override
 	public String getEncoding() {
-		return this.getBinaryEncoding();
-	}
-
-	@Override
-	public String[] getMembers() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public double[] getEachGroupMaxDistance() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public double[] getEachGroupGH() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Boolean isAllValidGroups() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public String getEncoding() {
+//		return this.getBinaryEncoding();
+//	}
+//
+//	@Override
+//	public String[] getMembers() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public double[] getEachGroupMaxDistance() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public double[] getEachGroupGH() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public boolean isValid() {
+//		// TODO Auto-generated method stub
+//		return false;
+//	}
 
 }

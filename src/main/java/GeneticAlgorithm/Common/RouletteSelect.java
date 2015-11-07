@@ -36,9 +36,9 @@ public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 			}
 		} else {
 			/**
-			 * calculate fitness sum of population, generate 
-			 * a random number within a range of that number, 
-			 * select the first two numbers when the fitness score is greater than that
+			 * calculate average fitness sum, generate 
+			 * a random number within a range of that average number, 
+			 * select the first two numbers with a fitness score above that
 			 */
 			for (int i = 0; i < parentCount; i++) {
 				int r = (int) (Math.random() * sumFitness);
