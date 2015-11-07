@@ -155,14 +155,14 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				}
 			}
 			// average fitness level for the Generation
-			double avg = totalFitness / this.Config.getPopulationSize();
+			//double avg = totalFitness / this.Config.getPopulationSize();
 			/**
 			 * if no convergence, then we should display the fittest
 			 * using the index of the best grouping (winner class)
 			 */
-			int winnerClass = this.Solution.getFittestSolutionIndex();
+			//int winnerClass = this.Solution.getFittestSolutionIndex();
 
-			this.displayResults(population, avg, totalFitness, winnerClass, crossoverCount, mutationCount, convergence, evolution);
+			//this.displayResults(population, avg, totalFitness, winnerClass, crossoverCount, mutationCount, convergence, evolution);
 
 			/**
 			 * ********** END LOG RESULTS ***********

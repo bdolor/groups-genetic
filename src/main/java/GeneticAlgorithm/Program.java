@@ -3,6 +3,7 @@ package main.java.GeneticAlgorithm;
 import main.java.GeneticAlgorithm.Binomial.BinomialChromosome;
 import main.java.GeneticAlgorithm.Binomial.BinomialFactory;
 import main.java.GeneticAlgorithm.Binomial.BinomialSolution;
+import main.java.GeneticAlgorithm.Common.BinaryTournamentSelect;
 import main.java.GeneticAlgorithm.Common.BitInversionMutation;
 import main.java.GeneticAlgorithm.Common.GeneticAlgorithmException;
 import main.java.GeneticAlgorithm.Common.PermutationCrossover;
@@ -37,7 +38,8 @@ public class Program {
 		ga.Config = config;
 		ga.CrossOver = new PermutationCrossover<StudentGroups>();
 		ga.Mutation = new PermutationMutation<StudentGroups>();
-		ga.Select = new RouletteSelect<StudentGroups>();
+		//ga.Select = new RouletteSelect<StudentGroups>();
+		ga.Select = new BinaryTournamentSelect<StudentGroups>();
 		ga.Solution = new StudentGroupsSolution<StudentGroups>();
 		ga.Factory = new StudentGroupsFactory<StudentGroups>();
 				
