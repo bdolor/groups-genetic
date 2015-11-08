@@ -85,20 +85,25 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			newGeneration.add(elite);
 			int crossoverCount = 0;
 			int mutationCount = 0;
+			
+			// Select the best 'individuals' (student arrangement in a class) within a population
+			T[] parents = this.Select.GetParents(population, populationFitness, this.Config.getRequiredParentCount());
+
+			/**
+			 * ****** ADAPTIVE PROBABILITY *********
+			 */
+			double parentFitness = this.Config.getRequiredParentCount();
+
+			for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
+				parentFitness += parents[i].getFitness();
+			}
+			// set the crossover probability
+			this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness / 2);
+			// set the mutation probability
+			this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness / 2);
+				
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
 				
-				// Select the best 'individuals' (student arrangement in a class) within a population
-				T[] parents = this.Select.GetParents(population, populationFitness, this.Config.getRequiredParentCount());
-				
-				/******** ADAPTIVE PROBABILITY **********/
-				double parentFitness = this.Config.getRequiredParentCount();
-
-				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
-					parentFitness += parents[i].getFitness();
-				}
-				// set the crossover probability
-				this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness/2);
-								
 				// Crossover is only applied on a random basis, 
 				// that is, if a random number is less that CrossoverProbability
 				// @see GeneticAlgorithmConfig.java
@@ -114,10 +119,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				// that is, if a random number is less than MutationProbability
 				// @see GeneticAlgorithmConfig.java
 				T[] mutatedOffspring = null;
-				
-				/******** ADAPTIVE PROBABILITY **********/
-				this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness/2);
-				
+								
 				if (Math.random() < this.Config.getMutationProbability()) {
 					mutatedOffspring = this.Mutation.Mutate(offspring);
 					mutationCount++;
@@ -136,7 +138,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			
 			totalFitness = 0;
 			int convergence = 0;
-			int convergenceIndex;
+			int classIndex;
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				
 				// sum up fitness of a generation
@@ -146,21 +148,21 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				// check for convergence, notify 
 				if (population.get(i).isAllValidGroups()) {
 					convergence++;
-					convergenceIndex = i;
+					classIndex = i;
 					// average fitness level for all populations up to this point
 					double avg = totalFitness / i+1;
 					// winner, winner, chicken diner
-					System.out.println("!!!!!!!!  CONVERGENCE !!!!!!!!!!! -> index: " + convergenceIndex);
-					this.displayResults(population, avg, totalFitness, convergenceIndex, crossoverCount, mutationCount, convergence, evolution);
+					System.out.println("!!!!!!!!  CLASS WITH ALL VALID GROUPS !!!!!!!!!!! -> index: " + classIndex);
+					this.displayResults(population, avg, totalFitness, classIndex, crossoverCount, mutationCount, convergence, evolution);
 				}
 			}
 			// average fitness level for the Generation
-			//double avg = totalFitness / this.Config.getPopulationSize();
+			double avg = totalFitness / this.Config.getPopulationSize();
 			/**
 			 * if no convergence, then we should display the fittest
 			 * using the index of the best grouping (winner class)
 			 */
-			//int winnerClass = this.Solution.getFittestSolutionIndex();
+			this.Solution.getFittestSolutionIndex();
 
 			//this.displayResults(population, avg, totalFitness, winnerClass, crossoverCount, mutationCount, convergence, evolution);
 
