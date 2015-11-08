@@ -18,7 +18,10 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		this.setEncoding(this.getRandomEncoding());
 		this.applyCorrection();
 	}
-
+	/**
+	 * Returns a value other than zero on the condition that it is a valid group
+	 * @return double sumGh
+	 */
 	@Override
 	public double getFitness() {		
 		double sumGh = 0;

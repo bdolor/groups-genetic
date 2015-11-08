@@ -20,7 +20,12 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		this.setEncoding(this.getRandomEncoding());
 		this.applyCorrection();
 	}
-
+	/**
+	 * Get the sum of all GH values in a class of students. Invalid groups
+	 * are given a value of zero.
+	 * 
+	 * @return 
+	 */
 	@Override
 	public double getFitness() {		
 		double sumGh = 0;
@@ -48,6 +53,12 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		this.Encoding = encoding;
 	}
 
+	/**
+	 * Evaluate if a group of 4 is valid, meaning has a Euclidean Distance greater
+	 * than 2 and a GH value greater than 0.5.
+	 * 
+	 * @return Boolean
+	 */
 	public boolean isValid() {
 		boolean ret = true;
 		ArrayList<Stack<Integer>> groups = this.getGroups();		
@@ -106,6 +117,11 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		return correctedEncoding;
 	}
 
+	/**
+	 * Take a class of 512 student IDs and represent them as a stack array of 128 groups.
+	 * 
+	 * @return groups ArrayList stack
+	 */
 	protected ArrayList<Stack<Integer>> getGroups() {
 		ArrayList<Stack<Integer>> groups = new ArrayList<Stack<Integer>>();
 

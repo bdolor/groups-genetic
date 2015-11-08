@@ -23,6 +23,8 @@ public class GroupEncodingCrossover <T extends IChromosome<int[]>> implements IC
 		
 		int[] offspringEncoding = new int[GroupEncodingChromosome.MAXIMUM_STUDENTS];
 		
+		// make one offspring at a random single point determines how much 
+		// from each parent the offspring gets
 		for (int i=0; i<GroupEncodingChromosome.MAXIMUM_STUDENTS;i++ ) {
 			offspringEncoding[i] = i < r ? parent1Encoding[i] : parent2Encoding[i];
 		}

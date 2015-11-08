@@ -29,13 +29,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 	protected double[] EvolutionFitness;
 
 	/**
-	 * Calculate population fitness.
-	 * 
-	 * Creates an array of fitness values for each of the group arrangement
-	 * solutions in a population of solutions, also sums the total fitness for
-	 * the entire population of group arrangement solutions.
-	 */
-	/**
 	 * Build new generation, two at a time to max population size.
 	 * 
 	 * Grab two of the 'best' parents, create two 'offspring' (crossover) mutate
@@ -67,12 +60,28 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			double newpopulation = 0;
 
 			startTime = System.nanoTime();
-
+			
+			/**
+			 * Calculate population fitness.
+			 * 
+			 * Creates an array of fitness values for each of the group arrangement
+			 * solutions in a population of solutions, also sums the total fitness for
+			 * the entire population of group arrangement solutions.
+			 */
+			double totalFitness = 0.0;
+			double maxFitness = 0.0;
 			double[] populationFitness = new double[this.Config.getPopulationSize()];
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				populationFitness[i] = population.get(i).getFitness();
+				totalFitness += populationFitness[i];
+				if (populationFitness[i] > maxFitness) {
+					maxFitness = populationFitness[i];
+				}
 			}
-
+				
+			double parentFitness = this.Config.getRequiredParentCount();
+			double avgFitness = totalFitness / this.Config.getPopulationSize();
+			
 			endTime = System.nanoTime();
 			fitnessTime += (endTime - startTime) / 1000000000d;
 
@@ -91,12 +100,18 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				selectTime += (endTime - startTime) / 1000000000d;
 
 				startTime = System.nanoTime();
-				T[] offspring = this.doCrossover(parents);
+				
+				// calculate parent fitness
+				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
+					parentFitness += parents[i].getFitness();
+				}
+				
+				T[] offspring = this.doCrossover(parents, avgFitness, maxFitness, parentFitness);
 				endTime = System.nanoTime();
 				crossoverTime += (endTime - startTime) / 1000000000d;
 
 				startTime = System.nanoTime();
-				T[] mutatedOffspring = this.doMutation(offspring);
+				T[] mutatedOffspring = this.doMutation(offspring, avgFitness, maxFitness, parentFitness);
 				endTime = System.nanoTime();
 				mutationTime += (endTime - startTime) / 1000000000d;
 
@@ -159,12 +174,12 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		return population;
 	}
 
-	protected T[] doCrossover(T[] parents) {
+	protected T[] doCrossover(T[] parents, double avgFitness, double maxFitness, double parentFitness) {
 		// Crossover is only applied on a random basis,
 		// that is, if a random number is less that 0.3 = CrossoverProbability
 		// @see GeneticAlgorithmConfig.java
 		T[] offspring = null;
-
+		this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness/2);
 		if (Math.random() < this.Config.getCrossoverProbability()) {
 
 			try {
@@ -182,11 +197,12 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	}
 
-	protected T[] doMutation(T[] offspring) {
+	protected T[] doMutation(T[] offspring, double avgFitness, double maxFitness, double parentFitness) {
 		// Mutation only applied on a random basis,
 		// that is, if a random number is less than 0.3 = MutationProbability
 		// @see GeneticAlgorithmConfig.java
 		T[] mutatedOffspring = null;
+		this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness/2);
 		if (Math.random() < this.Config.getMutationProbability()) {
 			try {
 				mutatedOffspring = this.Mutation.Mutate(offspring);

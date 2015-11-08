@@ -21,15 +21,79 @@ public class GeneticAlgorithmConfig {
 	public double getCrossoverProbability() {
 		return CrossoverProbability;
 	}
-	public void setCrossoverProbability(double crossoverProbability) {
+	
+	/**
+	 * Adjusts the Crossover probability based on how fit the parents are.
+	 *
+	 * If parent fitness is low, CP is increased ( promote the extensive
+	 * recombination )
+	 *
+	 *
+	 * @param avgFitness
+	 * @param maxFitness
+	 * @param parentFitness
+	 */
+	public void setCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
+		// adaptive probability
+		double fallback = 0.99;
+		double crossoverProbability;
+		double upperLimit = 1.0;
+		double lowerLimit = 0.5;
+
+		// CP = (max fitness - parent fitness)/ (max fitness - avg fitness), CP <= 1.0
+		crossoverProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));
+
+		/**
+		 * safety, must be less than 1.0 A value of greater than 1
+		 * occurs when parentFitness is less than average Fitness
+		 */
+		if (crossoverProbability >= upperLimit) {
+			crossoverProbability = fallback;
+		}
+		if (crossoverProbability < lowerLimit) {
+			crossoverProbability = lowerLimit;
+		}
 		CrossoverProbability = crossoverProbability;
+
 	}
+	
 	public double getMutationProbability() {
 		return MutationProbability;
 	}
-	public void setMutationProbability(double mutationProbability) {
+	/**
+	 * Adjusts the Mutation probability based on how fit the parents are.
+	 *
+	 * If parent fitness is high, MP is decreased ( prevent disruption of
+	 * the solution )
+	 *
+	 * @param avgFitness
+	 * @param maxFitness
+	 * @param parentFitness
+	 */
+	public void setMutationProbability(double avgFitness, double maxFitness, double parentFitness) {
+		// adaptive probability
+		double fallback = 0.049;
+		double mutationProbability;
+		double upperLimit = 0.05;
+		double lowerLimit = 0.01;
+
+		// MP <= 0.05
+		mutationProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));
+
+		/**
+		 * safety, must be less than 0.05 A value of greater than 0.05
+		 * occurs when parentFitness is less than average Fitness
+		 */
+		if (mutationProbability >= upperLimit) {
+			mutationProbability = fallback;
+		}
+		if (mutationProbability < lowerLimit) {
+			mutationProbability = lowerLimit;
+		}
+
 		MutationProbability = mutationProbability;
 	}
+	
 	public void setPopulationSize(int populationSize) {
 		PopulationSize = populationSize;
 	}
