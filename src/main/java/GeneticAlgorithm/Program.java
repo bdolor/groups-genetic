@@ -8,6 +8,7 @@ import main.java.GeneticAlgorithm.Common.GeneticAlgorithmException;
 import main.java.GeneticAlgorithm.Common.PermutationCrossover;
 import main.java.GeneticAlgorithm.Common.PermutationMutation;
 import main.java.GeneticAlgorithm.Common.RouletteSelect;
+import main.java.GeneticAlgorithm.Common.BinaryTournamentSelect;
 import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
 import main.java.GeneticAlgorithm.Interfaces.IReport;
 import main.java.GeneticAlgorithm.StudentGrouping.GroupEncodingChromosome;
@@ -23,13 +24,9 @@ import main.java.GeneticAlgorithm.UserInterface.ReportFrame;
 public class Program {
 
 	public static void main(String[] args) {
-		
-		
 	
 		ReportFrame report = new ReportFrame();
 		report.setVisible(true);
-		
-
 		
 		System.out.println("Athabasca University");
 		System.out.println("Computer Science 658: Computational Intelligence");
@@ -46,27 +43,20 @@ public class Program {
 	private static void RunStudentGroup(IReport report) {
 		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
 		
-		//GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<StudentGroups>();
-		GeneticAlgorithm<GroupEncodingChromosome> ga = new GeneticAlgorithm<GroupEncodingChromosome>();
+		//GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<>();
+		GeneticAlgorithm<GroupEncodingChromosome> ga = new GeneticAlgorithm<>();
 		
 		ga.Config = config;
-		//ga.CrossOver = new PermutationCrossover<StudentGroups>();
+		//ga.CrossOver = new PermutationCrossover<>();
 		//ga.CrossOver = new StudentGroupCrossover<StudentGroups>();
 		ga.CrossOver = new GroupEncodingCrossover<>();
-		
-		
-		
-		
-		//ga.Mutation = new PermutationMutation<StudentGroups>();
-		
+		//ga.Mutation = new PermutationMutation<>();
 		ga.Mutation = new GroupEncodingMutation<>();
-		
 		//ga.Select = new RouletteSelect<StudentGroups>();
-		ga.Select = new RouletteSelect<GroupEncodingChromosome>();
-		
-		
+		ga.Select = new RouletteSelect<>();
+		//ga.Select = new BinaryTournamentSelect<>();
 		//ga.Solution = new StudentGroupsSolution<StudentGroups>();
-		//ga.Factory = new StudentGroupsFactory<StudentGroups>();
+		//ga.Factory = new StudentGroupsFactory<>();
 		ga.Factory = new GroupEncodingChromosome();
 		ga.setReport(report);
 

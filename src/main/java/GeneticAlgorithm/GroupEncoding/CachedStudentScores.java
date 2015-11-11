@@ -9,6 +9,8 @@ public class CachedStudentScores {
 	public final static int MAXIMUM_STUDENTS = 512;
 
 	private static double[][] Distance = null;
+	
+	private static int DistanceMatrixCalculated = 0; 
 
 	public CachedStudentScores() {
 
@@ -61,6 +63,10 @@ public class CachedStudentScores {
 
 		return ghValue;
 	}
+	
+	public int getDistanceMatrixCalculated() {
+		return CachedStudentScores.DistanceMatrixCalculated;
+	}
 
 	public double getMaxDistance(int student1, int student2, int student3, int student4) {
 		ArrayList<Double> distances = new ArrayList<Double>();
@@ -78,15 +84,12 @@ public class CachedStudentScores {
 	}
 
 	protected double getDistance(int student1, int student2) {
-
-		double distance;
-
 		int s1 = student1 < student2 ? student1 : student2;
 		int s2 = student1 < student2 ? student2 : student1;
 
-		if (CachedStudentScores.Distance[s1 - 1][s2 - 1] != -1) {
-			distance = CachedStudentScores.Distance[s1-1][s2-1];
-		} else {
+		if (CachedStudentScores.Distance[s1 - 1][s2 - 1] == -1) {
+			CachedStudentScores.DistanceMatrixCalculated ++;
+			
 			int[] score1 = this.getScores(student1);
 			int[] score2 = this.getScores(student2);
 

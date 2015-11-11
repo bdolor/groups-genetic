@@ -107,7 +107,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		return correctedEncoding;
 	}
 
-	protected ArrayList<Stack<Integer>> getGroups() {
+	public ArrayList<Stack<Integer>> getGroups() {
 		ArrayList<Stack<Integer>> groups = new ArrayList<Stack<Integer>>();
 
 		for (int i = 0; i < GroupEncodingChromosome.MAXIMUM_STUDENTS / 4; i++) {
@@ -126,25 +126,4 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 	public GroupEncodingChromosome CreateChromosome() {
 		return new GroupEncodingChromosome();
 	}
-
-	public String[] getMembers() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public double[] getEachGroupMaxDistance() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public double[] getEachGroupGH() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public Boolean isAllValidGroups() {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
 }

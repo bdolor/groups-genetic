@@ -2,22 +2,42 @@ package main.java.GeneticAlgorithm;
 
 public class GeneticAlgorithmConfig {
 	
-	private int PopulationSize = 500;
+	private int PopulationSize = 100;
 	private int MaximumEvolutions = 20000;
 	private int RequiredParentCount = 2;
 	private double CrossoverProbability = 0.9;
 	private double MutationProbability = 0.2;
+	private int EliteChromosomeCount = 5;
+	private int ConvergenceMaximum = 50;
 	private int ReportRefreshRate = 2;
 	
 	public int getPopulationSize() {
 		return PopulationSize;
 	}
+	public int getConvergenceMaximum() {
+		return ConvergenceMaximum;
+	}
+
+	public void setConvergenceMaximum(int convergenceMaximum) {
+		ConvergenceMaximum = convergenceMaximum;
+	}
+
+	public int getEliteChromosomeCount() {
+		return EliteChromosomeCount;
+	}
+
+	public void setEliteChromosomeCount(int eliteChromosomeCount) {
+		EliteChromosomeCount = eliteChromosomeCount;
+	}	
+	
 	public int getReportRefreshRate() {
 		return ReportRefreshRate;
 	}
+	
 	public void setReportRefreshRate(int reportRefreshRate) {
 		ReportRefreshRate = reportRefreshRate;
 	}
+	
 	public double getCrossoverProbability() {
 		return CrossoverProbability;
 	}
@@ -75,7 +95,7 @@ public class GeneticAlgorithmConfig {
 		double fallback = 0.049;
 		double mutationProbability;
 		double upperLimit = 0.05;
-		double lowerLimit = 0.01;
+		double lowerLimit = 0.001;
 
 		// MP <= 0.05
 		mutationProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));
@@ -109,4 +129,13 @@ public class GeneticAlgorithmConfig {
 	public void setRequiredParentCount(int requiredParentCount) {
 		RequiredParentCount = requiredParentCount;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format(
+				"{PopulationSize:%d}, {MaximumEvolutions:%d}, {Crossover:%.3f}, {Mutation %.3f}, {Elitists:%d}, {ConvergenceCount:%d}",
+				this.getPopulationSize(), this.getMaximumEvolutions(), this.getCrossoverProbability(),
+				this.getMutationProbability(), this.getEliteChromosomeCount(), this.getConvergenceMaximum());
+	}
+
 }
