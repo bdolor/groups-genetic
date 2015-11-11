@@ -176,7 +176,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		// that is, if a random number is less that 0.3 = CrossoverProbability
 		// @see GeneticAlgorithmConfig.java
 		T[] offspring = null;
-		this.Config.setCrossoverProbability(avgFitness, maxFitness, parentFitness / 2);
+		this.Config.setAdaptiveCrossoverProbability(avgFitness, maxFitness, parentFitness / 2);
 		if (Math.random() < this.Config.getCrossoverProbability()) {
 
 			try {
@@ -199,7 +199,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		// that is, if a random number is less than 0.3 = MutationProbability
 		// @see GeneticAlgorithmConfig.java
 		T[] mutatedOffspring = null;
-		this.Config.setMutationProbability(avgFitness, maxFitness, parentFitness / 2);
+		this.Config.setAdaptiveMutationProbability(avgFitness, maxFitness, parentFitness / 2);
 		if (Math.random() < this.Config.getMutationProbability()) {
 			try {
 				mutatedOffspring = this.Mutation.Mutate(offspring);

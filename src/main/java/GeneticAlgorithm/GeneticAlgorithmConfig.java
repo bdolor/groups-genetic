@@ -42,6 +42,14 @@ public class GeneticAlgorithmConfig {
 		return CrossoverProbability;
 	}
 	
+	public void setCrossoverProbability(double crossoverProbability) {
+		CrossoverProbability = crossoverProbability;
+	}
+	
+	public void setMutationProbability(double mutationProbability) {
+		MutationProbability = mutationProbability;
+	}
+	
 	/**
 	 * Adjusts the Crossover probability based on how fit the parents are.
 	 *
@@ -53,7 +61,7 @@ public class GeneticAlgorithmConfig {
 	 * @param maxFitness
 	 * @param parentFitness
 	 */
-	public void setCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
+	public void setAdaptiveCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
 		// adaptive probability
 		double fallback = 0.99;
 		double crossoverProbability;
@@ -90,7 +98,7 @@ public class GeneticAlgorithmConfig {
 	 * @param maxFitness
 	 * @param parentFitness
 	 */
-	public void setMutationProbability(double avgFitness, double maxFitness, double parentFitness) {
+	public void setAdaptiveMutationProbability(double avgFitness, double maxFitness, double parentFitness) {
 		// adaptive probability
 		double fallback = 0.049;
 		double mutationProbability;
