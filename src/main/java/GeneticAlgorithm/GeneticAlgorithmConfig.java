@@ -102,7 +102,7 @@ public class GeneticAlgorithmConfig {
 		// adaptive probability
 		double fallback = 0.049;
 		double mutationProbability;
-		double upperLimit = 0.05;
+		double upperLimit = 0.5;
 		double lowerLimit = 0.001;
 
 		// MP <= 0.05
