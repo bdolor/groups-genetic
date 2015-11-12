@@ -38,4 +38,9 @@ public class PermutationMutation <T extends IChromosome<int[]>> implements IMuta
 		return (T[]) mutatedOffspring;
 	}
 
+	@Override
+	public String toString() {
+		return "Permutation Mutation";
+	}
+
 }

@@ -2,82 +2,126 @@ package main.java.GeneticAlgorithm;
 
 public class GeneticAlgorithmConfig {
 	
-	private int PopulationSize = 50;
-	private int MaximumEvolutions = 1000;
+	private int PopulationSize = 100;
+	private int MaximumEvolutions = 20000;
 	private int RequiredParentCount = 2;
-	private double CrossoverProbability = 1.0; // (0.5-1.0) 
-	private double MutationProbability = 0.05; // (0.001-0.05) 
+	private double CrossoverProbability = 0.9;
+	private double MutationProbability = 0.2;
+	private int EliteChromosomeCount = 5;
+	private int ConvergenceMaximum = 50;
+	private int ReportRefreshRate = 2;
 	
 	public int getPopulationSize() {
 		return PopulationSize;
 	}
+	public int getConvergenceMaximum() {
+		return ConvergenceMaximum;
+	}
+
+	public void setConvergenceMaximum(int convergenceMaximum) {
+		ConvergenceMaximum = convergenceMaximum;
+	}
+
+	public int getEliteChromosomeCount() {
+		return EliteChromosomeCount;
+	}
+
+	public void setEliteChromosomeCount(int eliteChromosomeCount) {
+		EliteChromosomeCount = eliteChromosomeCount;
+	}	
+	
+	public int getReportRefreshRate() {
+		return ReportRefreshRate;
+	}
+	
+	public void setReportRefreshRate(int reportRefreshRate) {
+		ReportRefreshRate = reportRefreshRate;
+	}
+	
 	public double getCrossoverProbability() {
 		return CrossoverProbability;
 	}
 	
+	public void setCrossoverProbability(double crossoverProbability) {
+		CrossoverProbability = crossoverProbability;
+	}
+	
+	public void setMutationProbability(double mutationProbability) {
+		MutationProbability = mutationProbability;
+	}
+	
 	/**
 	 * Adjusts the Crossover probability based on how fit the parents are.
-	 * 
-	 * If parent fitness is low, CP is increased ( promote the extensive recombination )
-	 *  
-	 * 
+	 *
+	 * If parent fitness is low, CP is increased ( promote the extensive
+	 * recombination )
+	 *
+	 *
 	 * @param avgFitness
 	 * @param maxFitness
-	 * @param parentFitness 
+	 * @param parentFitness
 	 */
-	public void setCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
+	public void setAdaptiveCrossoverProbability(double avgFitness, double maxFitness, double parentFitness) {
 		// adaptive probability
 		double fallback = 0.99;
 		double crossoverProbability;
 		double upperLimit = 1.0;
-		
+		double lowerLimit = 0.5;
+
 		// CP = (max fitness - parent fitness)/ (max fitness - avg fitness), CP <= 1.0
 		crossoverProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));
-		
+
 		/**
-		 * safety, must be less than 1.0
-		 * A value of greater than 1 occurs when parentFitness
-		 * is less than average Fitness
+		 * safety, must be less than 1.0 A value of greater than 1
+		 * occurs when parentFitness is less than average Fitness
 		 */
-		
-		if (crossoverProbability >= upperLimit ) {
+		if (crossoverProbability >= upperLimit) {
 			crossoverProbability = fallback;
+		}
+		if (crossoverProbability < lowerLimit) {
+			crossoverProbability = lowerLimit;
 		}
 		CrossoverProbability = crossoverProbability;
 
 	}
+	
 	public double getMutationProbability() {
 		return MutationProbability;
 	}
 	/**
 	 * Adjusts the Mutation probability based on how fit the parents are.
-	 * 
-	 * If parent fitness is high, MP is decreased ( prevent disruption of the solution ) 
-	 * 
+	 *
+	 * If parent fitness is high, MP is decreased ( prevent disruption of
+	 * the solution )
+	 *
 	 * @param avgFitness
 	 * @param maxFitness
-	 * @param parentFitness 
+	 * @param parentFitness
 	 */
-	public void setMutationProbability(double avgFitness, double maxFitness, double parentFitness) {
+	public void setAdaptiveMutationProbability(double avgFitness, double maxFitness, double parentFitness) {
 		// adaptive probability
 		double fallback = 0.049;
 		double mutationProbability;
 		double upperLimit = 0.05;
-		
+		double lowerLimit = 0.001;
+
 		// MP <= 0.05
 		mutationProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));
-		
+
 		/**
-		 * safety, must be less than 0.05
-		 * A value of greater than 0.05 occurs when parentFitness
-		 * is less than average Fitness
+		 * safety, must be less than 0.05 A value of greater than 0.05
+		 * occurs when parentFitness is less than average Fitness
 		 */
-		if (mutationProbability >= upperLimit ){
+		if (mutationProbability >= upperLimit) {
 			mutationProbability = fallback;
 		}
-		
+		if (mutationProbability < lowerLimit) {
+			mutationProbability = lowerLimit;
+		}
+
 		MutationProbability = mutationProbability;
 	}
+	
 	public void setPopulationSize(int populationSize) {
 		PopulationSize = populationSize;
 	}
@@ -93,4 +137,13 @@ public class GeneticAlgorithmConfig {
 	public void setRequiredParentCount(int requiredParentCount) {
 		RequiredParentCount = requiredParentCount;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format(
+				"{PopulationSize:%d}, {MaximumEvolutions:%d}, {Crossover:%.3f}, {Mutation %.3f}, {Elitists:%d}, {ConvergenceCount:%d}",
+				this.getPopulationSize(), this.getMaximumEvolutions(), this.getCrossoverProbability(),
+				this.getMutationProbability(), this.getEliteChromosomeCount(), this.getConvergenceMaximum());
+	}
+
 }

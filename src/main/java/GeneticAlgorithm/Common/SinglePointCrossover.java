@@ -8,10 +8,10 @@ public class SinglePointCrossover<T extends IChromosome<String>> implements ICro
 	@SuppressWarnings("unchecked")
 	@Override
 	public T[] CrossOver(T[] parents) throws GeneticAlgorithmException {
-
+	
 		if (parents.length != this.getRequiredParentCount()) {
-			throw new GeneticAlgorithmException(String.format("Crossover expecting %d parents but found %d",
-					this.getRequiredParentCount(), parents.length));
+			throw new GeneticAlgorithmException(
+					String.format("Crossover expecting 2 parents but found {0}", parents.length));
 		}
 
 		int r2 = (int) (1 + Math.random() * parents[0].getEncoding().length());

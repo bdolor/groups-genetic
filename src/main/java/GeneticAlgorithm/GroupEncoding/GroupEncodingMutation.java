@@ -6,7 +6,7 @@ import main.java.GeneticAlgorithm.Interfaces.IMutation;
 
 public class GroupEncodingMutation  <T extends IChromosome<int[]>> implements IMutation<T>  {
 
-	public final static int MUTATION_SWAP_COUNT = 100;
+	public final static int MUTATION_SWAP_COUNT = 1;
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,5 +31,10 @@ public class GroupEncodingMutation  <T extends IChromosome<int[]>> implements IM
 		}
 		
 		return (T[]) mutatedOffspring;
+	}
+
+	@Override
+	public String toString() {
+		return "GroupEncodingMutation";
 	}	
 }

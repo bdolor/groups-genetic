@@ -3,23 +3,24 @@ package main.java.GeneticAlgorithm;
 import main.java.GeneticAlgorithm.Binomial.BinomialChromosome;
 import main.java.GeneticAlgorithm.Binomial.BinomialFactory;
 import main.java.GeneticAlgorithm.Binomial.BinomialSolution;
-import main.java.GeneticAlgorithm.Common.BinaryTournamentSelect;
 import main.java.GeneticAlgorithm.Common.BitInversionMutation;
 import main.java.GeneticAlgorithm.Common.GeneticAlgorithmException;
-import main.java.GeneticAlgorithm.Common.PermutationCrossover;
 import main.java.GeneticAlgorithm.Common.PermutationMutation;
 import main.java.GeneticAlgorithm.Common.RouletteSelect;
 import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingChromosome;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingCrossover;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingMutation;
+import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupCrossover;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsFactory;
-import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsSolution;
+import main.java.GeneticAlgorithm.UserInterface.ReportFrame;
+
 
 public class Program {
 
 	public static void main(String[] args) {
+	
 		
 		System.out.println("Athabasca University");
 		System.out.println("Computer Science 658: Computational Intelligence");
@@ -28,24 +29,33 @@ public class Program {
 		System.out.println();
 		System.out.println();
 		
-		//Program.RunStudentGroup();
+		Program.RunPermutationEncoding();
+		//Program.RunGroupEncoding();
 		//Program.RunBinomialSample();
-		Program.RunGroupEncoding();
 		
 	}
 	
-	private static void RunStudentGroup() {
+	private static void RunPermutationEncoding() {
+		
+		ReportFrame report = new ReportFrame();
+		
 		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
 		
-		GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<StudentGroups>();
-		
+		//GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<>();
+		GeneticAlgorithm<StudentGroups> ga = new GeneticAlgorithm<>();
+		 
 		ga.Config = config;
-		ga.CrossOver = new PermutationCrossover<StudentGroups>();
-		ga.Mutation = new PermutationMutation<StudentGroups>();
-		//ga.Select = new RouletteSelect<StudentGroups>();
-		ga.Select = new BinaryTournamentSelect<StudentGroups>();
-		ga.Solution = new StudentGroupsSolution<StudentGroups>();
-		ga.Factory = new StudentGroupsFactory<StudentGroups>();
+		ga.CrossOver = new StudentGroupCrossover<StudentGroups>();
+		ga.Mutation = new PermutationMutation<>();
+		ga.Select = new RouletteSelect<>();
+		//ga.Select = new BinaryTournamentSelect<>();
+		//ga.Solution = new StudentGroupsSolution<StudentGroups>();
+		ga.Factory = new StudentGroupsFactory<>();
+		ga.setReport(report);
+		
+		report.initializeReport(ga);
+		report.setVisible(true);
+
 				
 		try {
 			ga.Evolve();
@@ -55,19 +65,25 @@ public class Program {
 		}				
 		
 	}
+	
 	
 	private static void RunGroupEncoding() {
+		
+		ReportFrame report = new ReportFrame();
+		
 		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
 		
-		GeneticAlgorithm<GroupEncodingChromosome> ga = new GeneticAlgorithm<GroupEncodingChromosome>();
+		GeneticAlgorithm<GroupEncodingChromosome> ga = new GeneticAlgorithm<>();
 		
 		ga.Config = config;
-		ga.CrossOver = new GroupEncodingCrossover<GroupEncodingChromosome>();
-		ga.Mutation = new GroupEncodingMutation<GroupEncodingChromosome>();
-		ga.Select = new RouletteSelect<GroupEncodingChromosome>();
-		//ga.Select = new BinaryTournamentSelect<GroupEncodingChromosome>();
-		ga.Solution = new StudentGroupsSolution<GroupEncodingChromosome>();
+		ga.CrossOver = new GroupEncodingCrossover<>();
+		ga.Mutation = new GroupEncodingMutation<>();
+		ga.Select = new RouletteSelect<>();
 		ga.Factory = new GroupEncodingChromosome();
+		ga.setReport(report);
+		
+		report.initializeReport(ga);
+		report.setVisible(true);
 				
 		try {
 			ga.Evolve();
@@ -75,6 +91,7 @@ public class Program {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}				
+		
 	}
 	
 	private static void RunBinomialSample() {
