@@ -42,6 +42,11 @@ public class GroupEncodingCrossover <T extends IChromosome<int[]>> implements IC
 	public int getRequiredParentCount() {
 		return 2;
 	}
+
+	@Override
+	public String toString() {
+		return "Group Encoding Crossover";
+	}
 	
 
 }

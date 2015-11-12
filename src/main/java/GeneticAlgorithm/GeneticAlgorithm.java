@@ -9,8 +9,6 @@ import main.java.GeneticAlgorithm.Interfaces.IMutation;
 import main.java.GeneticAlgorithm.Interfaces.IReport;
 import main.java.GeneticAlgorithm.Interfaces.ISelect;
 import main.java.GeneticAlgorithm.Interfaces.ISolution;
-import main.java.GeneticAlgorithm.StudentGrouping.GroupEncodingChromosome;
-import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
 
 @SuppressWarnings("rawtypes")
 public class GeneticAlgorithm<T extends IChromosome> {
@@ -126,8 +124,12 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			avgFitness = sumFitness / population.size();
 			convergenceCount = Math.abs(avgFitness - maxFitness) < 0.000001 ? convergenceCount + 1 : 0;
 			boolean isConverged = convergenceCount == this.Config.getConvergenceMaximum();
+			
+			if (this.Report != null) {
+				this.Report.updateReport(avgFitness, maxFitness, fittestSolution, isConverged, startTime);
+			}
 
-			this.UpdateReport(population);
+			//this.UpdateReport(population);
 
 			isComplete = isConverged || evolution == this.Config.getMaximumEvolutions();
 			population = newGeneration;
@@ -264,41 +266,39 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		return fitness;
 	}
 	
-	protected void UpdateReport(ArrayList<T> population) {
-
-		double totalFitness = 0;
-		double totalGroupCount = 0;
-		int validSolutions = 0;
-		double maxFitness = 0;
-		double minFitness = 0;
-		double maxValidFitness = 0;
-
-		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-
-			double fitness = population.get(i).getFitness();
-
-			totalFitness += fitness;
-			maxFitness = fitness > maxFitness ? fitness : maxFitness;
-			minFitness = fitness < maxFitness ? fitness : minFitness;
-
-			GroupEncodingChromosome group = (GroupEncodingChromosome) population.get(i);
-
-			if (group.isValid()) {
-				validSolutions++;
-				maxValidFitness = fitness > maxValidFitness ? fitness : maxValidFitness;
-			}
-
-		}
-
-		double averageFitness = totalFitness / population.size();
-		double averageValidGroups = totalGroupCount / population.size();
-
-		this.Report.updateReport(averageFitness, averageValidGroups, validSolutions, maxFitness, minFitness,
-			maxValidFitness);
-
-		System.out.println(String.format("Avg Fitness = %f Avg Valid Groups = %f Valid Solutions = %d Max Fitness = %f",
-			averageFitness, averageValidGroups, validSolutions, maxFitness));
-	}
+//	protected void UpdateReport(ArrayList<T> population) {
+//
+//		double totalFitness = 0;
+//		double totalGroupCount = 0;
+//		int validSolutions = 0;
+//		double maxFitness = 0;
+//		double minFitness = 0;
+//		double maxValidFitness = 0;
+//
+//		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+//
+//			double fitness = population.get(i).getFitness();
+//
+//			totalFitness += fitness;
+//			maxFitness = fitness > maxFitness ? fitness : maxFitness;
+//			minFitness = fitness < maxFitness ? fitness : minFitness;		
+//
+//			if (population.get(i).isValid()) {
+//				validSolutions++;
+//				maxValidFitness = fitness > maxValidFitness ? fitness : maxValidFitness;
+//			}
+//
+//		}
+//
+//		double averageFitness = totalFitness / population.size();
+//		double averageValidGroups = totalGroupCount / population.size();
+//
+//		this.Report.updateReport(averageFitness, averageValidGroups, validSolutions, maxFitness, minFitness,
+//			maxValidFitness);
+//
+//		System.out.println(String.format("Avg Fitness = %f Avg Valid Groups = %f Valid Solutions = %d Max Fitness = %f",
+//			averageFitness, averageValidGroups, validSolutions, maxFitness));
+//	}
 
 	public void setConfig(GeneticAlgorithmConfig config) {
 		Config = config;
@@ -326,5 +326,21 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	public void setReport(IReport report) {
 		Report = report;
+	}
+
+	public GeneticAlgorithmConfig getConfig() {
+		return Config;
+	}
+
+	public ICrossOver<T> getCrossOver() {
+		return CrossOver;
+	}
+
+	public IMutation<T> getMutation() {
+		return Mutation;
+	}
+
+	public ISelect<T> getSelect() {
+		return Select;
 	}
 }

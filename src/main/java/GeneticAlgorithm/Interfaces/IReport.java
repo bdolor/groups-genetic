@@ -1,6 +1,8 @@
 package main.java.GeneticAlgorithm.Interfaces;
 
-public interface IReport {
-	void updateReport(double averageFitness, double averageValidGroups, int validSolutions, double maxFitness,
-			double minFitness, double maxValidFitness);
+import main.java.GeneticAlgorithm.GeneticAlgorithm;
+
+public interface IReport<T extends IChromosome<?>> {
+	public void updateReport(double averageFitness, double maxFitness, T fittest, boolean isConverged, long startTime);
+	public void initializeReport(GeneticAlgorithm<?> algorithm);	
 }

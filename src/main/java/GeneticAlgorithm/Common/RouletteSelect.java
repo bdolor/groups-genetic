@@ -56,4 +56,9 @@ public class RouletteSelect<T extends IChromosome> implements ISelect<T> {
 		return (T[]) parents;
 	}
 
+	@Override
+	public String toString() {
+		return "Roulette Selection";
+	}
+
 }

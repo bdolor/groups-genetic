@@ -32,6 +32,12 @@ public class BinomialChromosome extends BinaryChromosome {
 		return null;
 	}
 
+	@Override
+	public boolean isValid() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 //	@Override
 //	public String getEncoding() {
 //		return this.getBinaryEncoding();

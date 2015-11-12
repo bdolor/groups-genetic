@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import java.util.Stack;
 import main.java.GeneticAlgorithm.Interfaces.IChromosome;
 import main.java.GeneticAlgorithm.Interfaces.IFactory;
+import main.java.GeneticAlgorithm.Interfaces.IStudentChromosome;
 
-public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<GroupEncodingChromosome> {
+public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<GroupEncodingChromosome>, IStudentChromosome {
 
 	public final static int MAXIMUM_STUDENTS = 512;
 
@@ -30,7 +31,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 			sumGh = this.fitness;
 		} else {
 			if (this.isValid()) {
-				ArrayList<Stack<Integer>> groups = this.getGroups();
+				ArrayList<Stack<Integer>> groups = this.getGroupStacks();
 				for (Stack<Integer> group : groups) {
 					sumGh += this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3));
 				}			
@@ -51,7 +52,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 
 	public boolean isValid() {
 		boolean ret = true;
-		ArrayList<Stack<Integer>> groups = this.getGroups();		
+		ArrayList<Stack<Integer>> groups = this.getGroupStacks();		
 		for (Stack<Integer> group : groups) {
 			if ((this.scores.getMaxDistance(group.get(0), group.get(1), group.get(2), group.get(3)) <= 2)
 					&& this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3)) <= 0.5) {
@@ -76,7 +77,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 
 	protected int[] getCorrectedEncoding() {
 
-		ArrayList<Stack<Integer>> groups = this.getGroups();
+		ArrayList<Stack<Integer>> groups = this.getGroupStacks();
 
 		boolean isValid = false;
 		while (!isValid) {
@@ -107,7 +108,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		return correctedEncoding;
 	}
 
-	public ArrayList<Stack<Integer>> getGroups() {
+	public ArrayList<Stack<Integer>> getGroupStacks() {
 		ArrayList<Stack<Integer>> groups = new ArrayList<Stack<Integer>>();
 
 		for (int i = 0; i < GroupEncodingChromosome.MAXIMUM_STUDENTS / 4; i++) {
@@ -125,5 +126,22 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 	@Override
 	public GroupEncodingChromosome CreateChromosome() {
 		return new GroupEncodingChromosome();
+	}
+	@Override
+	public ArrayList<int[]> getStudentGroups() {
+		ArrayList<int[]> ret = new ArrayList<int[]>();
+		
+		ArrayList<Stack<Integer>> groups = this.getGroupStacks();
+		for(Stack<Integer> stack : groups) {
+			int[] students = new int[4];
+			students[0] = stack.get(0);
+			students[1] = stack.get(1);
+			students[2] = stack.get(2);
+			students[3] = stack.get(3);		
+			
+			ret.add(students);
+		}
+		
+		return ret;
 	}
 }
