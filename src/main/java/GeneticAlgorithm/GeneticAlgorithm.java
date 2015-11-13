@@ -95,11 +95,9 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				// average it out
 				parentFitness = parentFitness / this.Config.getRequiredParentCount();
 
-				T[] offspring = this.doAdaptiveCrossover(parents, avgFitness, maxFitness, parentFitness);
-				//T[] offspring = this.doCrossover(parents);
+				T[] offspring = this.doCrossover(parents, avgFitness, maxFitness, parentFitness);
 				
-				T[] mutatedOffspring = this.doAdaptiveMutation(offspring, avgFitness, maxFitness, parentFitness);
-				//T[] mutatedOffspring = this.doMutation(parents);
+				T[] mutatedOffspring = this.doMutation(offspring, avgFitness, maxFitness, parentFitness);
 				
 				for (int i = 0; i < mutatedOffspring.length; i++) {
 					if (newGeneration.size() < this.Config.getPopulationSize()) {
@@ -173,52 +171,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 		return population;
 	}
-
-	protected T[] doAdaptiveCrossover(T[] parents, double avgFitness, double maxFitness, double parentFitness) {
-		// Crossover is only applied on a random basis,
-		// that is, if a random number is less that 0.3 = CrossoverProbability
-		// @see GeneticAlgorithmConfig.java
-		T[] offspring = null;
-		this.Config.setAdaptiveCrossoverProbability(avgFitness, maxFitness, parentFitness / 2);
-		if (Math.random() < this.Config.getCrossoverProbability()) {
-
-			try {
-				offspring = this.CrossOver.CrossOver(parents);
-			} catch (GeneticAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			this.CrossoverCount++;
-		} else {
-			offspring = parents;
-		}
-
-		return offspring;
-
-	}
-
-	protected T[] doAdaptiveMutation(T[] offspring, double avgFitness, double maxFitness, double parentFitness) {
-		// Mutation only applied on a random basis,
-		// that is, if a random number is less than 0.3 = MutationProbability
-		// @see GeneticAlgorithmConfig.java
-		T[] mutatedOffspring = null;
-		this.Config.setAdaptiveMutationProbability(avgFitness, maxFitness, parentFitness / 2);
-		if (Math.random() < this.Config.getMutationProbability()) {
-			try {
-				mutatedOffspring = this.Mutation.Mutate(offspring);
-			} catch (GeneticAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			this.MutationCount++;
-		} else {
-			mutatedOffspring = offspring;
-		}
-
-		return mutatedOffspring;
-	}
 	
-	protected T[] doCrossover(T[] parents) {
+	protected T[] doCrossover(T[] parents, double avgFitness, double maxFitness, double parentFitness) {
 		// Crossover is only applied on a random basis,
 		// that is, if a random number is less that 0.3 = CrossoverProbability
 		// @see GeneticAlgorithmConfig.java
@@ -240,7 +194,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	}
 	
-	protected T[] doMutation(T[] offspring) {
+	protected T[] doMutation(T[] offspring, double avgFitness, double maxFitness, double parentFitness) {
 		// Mutation only applied on a random basis,
 		// that is, if a random number is less than 0.3 = MutationProbability
 		// @see GeneticAlgorithmConfig.java
