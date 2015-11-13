@@ -7,6 +7,7 @@ import main.java.GeneticAlgorithm.Common.BitInversionMutation;
 import main.java.GeneticAlgorithm.Common.GeneticAlgorithmException;
 import main.java.GeneticAlgorithm.Common.PermutationMutation;
 import main.java.GeneticAlgorithm.Common.RouletteSelect;
+import main.java.GeneticAlgorithm.Common.BinaryTournamentSelect;
 import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingChromosome;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingCrossover;
@@ -79,6 +80,7 @@ public class Program {
 		ga.CrossOver = new GroupEncodingCrossover<>();
 		ga.Mutation = new GroupEncodingMutation<>();
 		ga.Select = new RouletteSelect<>();
+		//ga.Select = new BinaryTournamentSelect<>();
 		ga.Factory = new GroupEncodingChromosome();
 		ga.setReport(report);
 		
