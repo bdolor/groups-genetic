@@ -79,8 +79,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			/**
 			 * ******** END OF ADAPTIVE PROBABILITY *********
 			 */
-			ArrayList<T> newGeneration = new ArrayList<T>();
-
+			ArrayList<T> newGeneration = this.doEliteSelect(population);
+			
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
 
 				// Select the best 'individuals' (student arrangement in a
@@ -264,6 +264,28 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			fitness[i] = population.get(i).getFitness();
 		}
 		return fitness;
+	}
+	
+	protected ArrayList<T> doEliteSelect(ArrayList<T> population) {
+		ArrayList<T> elitists = new ArrayList<T>(this.Config.getPopulationSize());
+		elitists.add(population.get(0));
+
+		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+			int j = 0;
+			boolean foundElite = false;
+			while (!foundElite && j < elitists.size()) {
+				if (population.get(i).getFitness() > elitists.get(j).getFitness()) {
+					elitists.add(j, population.get(i));
+					foundElite = true;
+				}
+				j++;
+			}
+			if (elitists.size() > this.Config.getEliteChromosomeCount()) {
+				elitists.remove(this.Config.getEliteChromosomeCount());
+			}
+		}
+
+		return elitists;
 	}
 	
 //	protected void UpdateReport(ArrayList<T> population) {

@@ -29,8 +29,8 @@ public class Program {
 		System.out.println();
 		System.out.println();
 		
-		Program.RunPermutationEncoding();
-		//Program.RunGroupEncoding();
+		//Program.RunPermutationEncoding();
+		Program.RunGroupEncoding();
 		//Program.RunBinomialSample();
 		
 	}

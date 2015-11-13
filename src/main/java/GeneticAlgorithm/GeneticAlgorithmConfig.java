@@ -2,12 +2,12 @@ package main.java.GeneticAlgorithm;
 
 public class GeneticAlgorithmConfig {
 	
-	private int PopulationSize = 100;
+	private int PopulationSize = 500;
 	private int MaximumEvolutions = 20000;
 	private int RequiredParentCount = 2;
 	private double CrossoverProbability = 0.9;
 	private double MutationProbability = 0.2;
-	private int EliteChromosomeCount = 5;
+	private int EliteChromosomeCount = 0;
 	private int ConvergenceMaximum = 50;
 	private int ReportRefreshRate = 2;
 	
