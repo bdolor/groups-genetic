@@ -92,6 +92,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
 					parentFitness += parents[i].getFitness();
 				}
+				// average it out
+				parentFitness = parentFitness / this.Config.getRequiredParentCount();
 
 				T[] offspring = this.doAdaptiveCrossover(parents, avgFitness, maxFitness, parentFitness);
 				//T[] offspring = this.doCrossover(parents);
