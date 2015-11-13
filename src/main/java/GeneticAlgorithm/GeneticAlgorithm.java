@@ -99,7 +99,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				T[] mutatedOffspring = this.doAdaptiveMutation(offspring, avgFitness, maxFitness, parentFitness);
 				//T[] mutatedOffspring = this.doMutation(parents);
 				
-				startTime = System.nanoTime();
 				for (int i = 0; i < mutatedOffspring.length; i++) {
 					if (newGeneration.size() < this.Config.getPopulationSize()) {
 						newGeneration.add(mutatedOffspring[i]);
@@ -266,8 +265,18 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		return fitness;
 	}
 	
+	/**
+	 * Given a population, return the ones with the best fitness
+	 * 
+	 * @param population
+	 * @return ArrayList elitists
+	 */
 	protected ArrayList<T> doEliteSelect(ArrayList<T> population) {
 		ArrayList<T> elitists = new ArrayList<T>(this.Config.getPopulationSize());
+		// bail early 
+		if ( 0 == this.Config.getEliteChromosomeCount()) {
+			return elitists;
+		}
 		elitists.add(population.get(0));
 
 		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
