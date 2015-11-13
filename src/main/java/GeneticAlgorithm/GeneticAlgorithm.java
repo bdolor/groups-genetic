@@ -64,7 +64,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			/********* PLEASE LEAVE HERE FOR ADAPTIVE PROBABILITY **********/
 			
 			double totalFitness = 0.0;
-			//double [] populationFitness = this.getPopulationFitness(population);
 			double[] populationFitness = new double[this.Config.getPopulationSize()];
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				populationFitness[i] = population.get(i).getFitness();
@@ -73,7 +72,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					maxFitness = populationFitness[i];
 				}
 			}
-			double parentFitness = this.Config.getRequiredParentCount();
 			double avgFitness = totalFitness / this.Config.getPopulationSize();
 
 			/**
@@ -82,7 +80,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			ArrayList<T> newGeneration = this.doEliteSelect(population);
 			
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
-
+				double parentFitness = 0.0;
+				
 				// Select the best 'individuals' (student arrangement in a
 				// class) within a population
 				T[] parents = this.Select.GetParents(population, populationFitness,

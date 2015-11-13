@@ -11,7 +11,7 @@ public class BinaryTournamentSelect<T extends IChromosome> implements ISelect<T>
 	@Override
 	public T[] GetParents(ArrayList<T> population, double[] fitness, int parentCount) {
 		IChromosome[] parents = new IChromosome[parentCount];
-		int pool = fitness.length;
+		int pool = fitness.length / 4; // increasing the size of pool decreases the liklihood that weak parents will be chosen
 		int contenders;
 		double champ1fitness = 0;
 		double champ2fitness = 0;

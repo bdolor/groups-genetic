@@ -103,7 +103,7 @@ public class GeneticAlgorithmConfig {
 		double fallback = 0.049;
 		double mutationProbability;
 		double upperLimit = 0.5;
-		double lowerLimit = 0.001;
+		double lowerLimit = 0.01;
 
 		// MP <= 0.05
 		mutationProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));

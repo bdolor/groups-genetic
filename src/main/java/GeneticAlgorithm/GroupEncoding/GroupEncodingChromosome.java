@@ -108,15 +108,27 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		return correctedEncoding;
 	}
 
+	/**
+	 * Take an array of 4 * 128 groupIDs, put them into 
+	 * a multidimensional array of 128, uses the index/key value (0 - 511) as 
+	 * student ID. Returns an array with incomplete/invalid groups (both greater than,
+	 * equal to, and less than 4 students per group) 
+	 * 
+	 * @return ArrayList groups
+	 */
 	public ArrayList<Stack<Integer>> getGroupStacks() {
 		ArrayList<Stack<Integer>> groups = new ArrayList<Stack<Integer>>();
 
+		// create an empty array of 128 groups
 		for (int i = 0; i < GroupEncodingChromosome.MAXIMUM_STUDENTS / 4; i++) {
 			groups.add(new Stack<Integer>());
 		}
-
+		
 		for (int i = 0; i < GroupEncodingChromosome.MAXIMUM_STUDENTS; i++) {
+			// get the value of groupID from the flat array of 4 * 128 groupIDs
 			int studentGroup = this.getEncoding()[i];
+			// use the value of grouptID - 1 as key
+			// push the value of i (translates to studentID) into the group
 			groups.get(studentGroup - 1).push(i + 1);
 		}
 
