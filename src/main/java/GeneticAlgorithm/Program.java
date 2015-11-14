@@ -31,6 +31,7 @@ public class Program {
 		//Program.RunPermutationEncoding();
 		//Program.RunGroupEncoding();
 		Program.RunAdaptiveGroupEncoding();
+		//Program.RunAdaptivePermutationEncoding();
 		//Program.RunBinomialSample();
 
 	}
@@ -91,7 +92,35 @@ public class Program {
 		}
 
 	}
+	private static void RunAdaptivePermutationEncoding() {
 
+		ReportFrame report = new ReportFrame();
+
+		GeneticAlgorithmConfig config = new GeneticAlgorithmConfig();
+
+		GeneticAlgorithm<StudentGroups> ga;
+		ga = new AdaptiveGeneticAlgorithm<>();
+
+		ga.Config = config;
+		ga.CrossOver = new StudentGroupCrossover<>();
+		ga.Mutation = new PermutationMutation<>();
+		ga.Select = new RouletteSelect<>();
+		//ga.Select = new BinaryTournamentSelect<>();
+		//ga.Solution = new StudentGroupsSolution<StudentGroups>();
+		ga.Factory = new StudentGroupsFactory<>();
+		ga.setReport(report);
+
+		report.initializeReport(ga);
+		report.setVisible(true);
+
+		try {
+			ga.Evolve();
+		} catch (GeneticAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 	private static void RunAdaptiveGroupEncoding() {
 
 		ReportFrame report = new ReportFrame();
