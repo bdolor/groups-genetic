@@ -55,7 +55,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		ArrayList<Stack<Integer>> groups = this.getGroupStacks();		
 		for (Stack<Integer> group : groups) {
 			if ((this.scores.getMaxDistance(group.get(0), group.get(1), group.get(2), group.get(3)) <= 2)
-					&& this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3)) <= 0.5) {
+					|| this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3)) <= 0.5) {
 				ret = false;
 			}
 		}
