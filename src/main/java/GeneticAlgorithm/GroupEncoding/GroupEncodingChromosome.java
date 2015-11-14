@@ -30,12 +30,12 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 		if (fitness != null) {
 			sumGh = this.fitness;
 		} else {
-			if (this.isValid()) {
+			//if (this.isValid()) {
 				ArrayList<Stack<Integer>> groups = this.getGroupStacks();
 				for (Stack<Integer> group : groups) {
 					sumGh += this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3));
 				}			
-			}						
+			//}						
 		}		
 		return sumGh;
 	}
