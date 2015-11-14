@@ -84,9 +84,4 @@ public class StudentGroupCrossover<T extends IChromosome<int[]>> implements ICro
 		return 2;
 	}
 
-	@Override
-	public String toString() {
-		return "Student Permutation Crossover";
-	}
-
 }

@@ -3,9 +3,8 @@ package main.java.GeneticAlgorithm.StudentGrouping;
 import java.util.ArrayList;
 
 import main.java.GeneticAlgorithm.Common.PermutationChromosome;
-import main.java.GeneticAlgorithm.Interfaces.IStudentChromosome;
 
-public class StudentGroups extends PermutationChromosome implements IStudentChromosome  {
+public class StudentGroups extends PermutationChromosome {
 
 	public final static int MAXIMUM_GH_PER_GROUP = 14;
 	public final static int MAXIMUM_STUDENTS = 512;
@@ -237,24 +236,7 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 				sumGh += this.scores.getGhValue(s1, s2, s3, s4);
 			}
 		}
-		return sumGh;
-	}
-
-	@Override
-	public ArrayList<int[]> getStudentGroups() {
-		ArrayList<int[]> groups = new ArrayList<int[]>();
-		
-		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
-			int[] group = new int[4];
-			group[0] = this.getEncoding()[(i * 4)];
-			group[1] = this.getEncoding()[(i * 4) + 1];
-			group[2] = this.getEncoding()[(i * 4) + 2];
-			group[3] = this.getEncoding()[(i * 4) + 3];
-			
-			groups.add(group);
-		}
-		
-		return groups;		
+		return (double) sumGh / (double) StudentGroups.MAXIMUM_STUDENTS / (double) StudentGroups.MAXIMUM_GH_PER_GROUP;
 	}
 
 	// public void displayResults(ArrayList population, int index, int

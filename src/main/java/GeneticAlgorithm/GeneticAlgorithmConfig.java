@@ -2,12 +2,12 @@ package main.java.GeneticAlgorithm;
 
 public class GeneticAlgorithmConfig {
 	
-	private int PopulationSize = 100;
+	private int PopulationSize = 500;
 	private int MaximumEvolutions = 20000;
 	private int RequiredParentCount = 2;
 	private double CrossoverProbability = 0.9;
 	private double MutationProbability = 0.2;
-	private int EliteChromosomeCount = 5;
+	private int EliteChromosomeCount = 0;
 	private int ConvergenceMaximum = 50;
 	private int ReportRefreshRate = 2;
 	
@@ -102,8 +102,8 @@ public class GeneticAlgorithmConfig {
 		// adaptive probability
 		double fallback = 0.049;
 		double mutationProbability;
-		double upperLimit = 0.05;
-		double lowerLimit = 0.001;
+		double upperLimit = 0.5;
+		double lowerLimit = 0.01;
 
 		// MP <= 0.05
 		mutationProbability = upperLimit * ((maxFitness - parentFitness) / (maxFitness - avgFitness));

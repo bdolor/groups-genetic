@@ -64,7 +64,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			/********* PLEASE LEAVE HERE FOR ADAPTIVE PROBABILITY **********/
 			
 			double totalFitness = 0.0;
-			//double [] populationFitness = this.getPopulationFitness(population);
 			double[] populationFitness = new double[this.Config.getPopulationSize()];
 			for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 				populationFitness[i] = population.get(i).getFitness();
@@ -73,16 +72,16 @@ public class GeneticAlgorithm<T extends IChromosome> {
 					maxFitness = populationFitness[i];
 				}
 			}
-			double parentFitness = this.Config.getRequiredParentCount();
 			double avgFitness = totalFitness / this.Config.getPopulationSize();
 
 			/**
 			 * ******** END OF ADAPTIVE PROBABILITY *********
 			 */
-			ArrayList<T> newGeneration = new ArrayList<T>();
-
+			ArrayList<T> newGeneration = this.doEliteSelect(population);
+			
 			while (newGeneration.size() < this.Config.getPopulationSize()) {
-
+				double parentFitness = 0.0;
+				
 				// Select the best 'individuals' (student arrangement in a
 				// class) within a population
 				T[] parents = this.Select.GetParents(population, populationFitness,
@@ -92,14 +91,13 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
 					parentFitness += parents[i].getFitness();
 				}
+				// average it out
+				parentFitness = parentFitness / this.Config.getRequiredParentCount();
 
-				T[] offspring = this.doAdaptiveCrossover(parents, avgFitness, maxFitness, parentFitness);
-				//T[] offspring = this.doCrossover(parents);
+				T[] offspring = this.doCrossover(parents, avgFitness, maxFitness, parentFitness);
 				
-				T[] mutatedOffspring = this.doAdaptiveMutation(offspring, avgFitness, maxFitness, parentFitness);
-				//T[] mutatedOffspring = this.doMutation(parents);
+				T[] mutatedOffspring = this.doMutation(offspring, avgFitness, maxFitness, parentFitness);
 				
-				startTime = System.nanoTime();
 				for (int i = 0; i < mutatedOffspring.length; i++) {
 					if (newGeneration.size() < this.Config.getPopulationSize()) {
 						newGeneration.add(mutatedOffspring[i]);
@@ -172,52 +170,8 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 		return population;
 	}
-
-	protected T[] doAdaptiveCrossover(T[] parents, double avgFitness, double maxFitness, double parentFitness) {
-		// Crossover is only applied on a random basis,
-		// that is, if a random number is less that 0.3 = CrossoverProbability
-		// @see GeneticAlgorithmConfig.java
-		T[] offspring = null;
-		this.Config.setAdaptiveCrossoverProbability(avgFitness, maxFitness, parentFitness / 2);
-		if (Math.random() < this.Config.getCrossoverProbability()) {
-
-			try {
-				offspring = this.CrossOver.CrossOver(parents);
-			} catch (GeneticAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			this.CrossoverCount++;
-		} else {
-			offspring = parents;
-		}
-
-		return offspring;
-
-	}
-
-	protected T[] doAdaptiveMutation(T[] offspring, double avgFitness, double maxFitness, double parentFitness) {
-		// Mutation only applied on a random basis,
-		// that is, if a random number is less than 0.3 = MutationProbability
-		// @see GeneticAlgorithmConfig.java
-		T[] mutatedOffspring = null;
-		this.Config.setAdaptiveMutationProbability(avgFitness, maxFitness, parentFitness / 2);
-		if (Math.random() < this.Config.getMutationProbability()) {
-			try {
-				mutatedOffspring = this.Mutation.Mutate(offspring);
-			} catch (GeneticAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			this.MutationCount++;
-		} else {
-			mutatedOffspring = offspring;
-		}
-
-		return mutatedOffspring;
-	}
 	
-	protected T[] doCrossover(T[] parents) {
+	protected T[] doCrossover(T[] parents, double avgFitness, double maxFitness, double parentFitness) {
 		// Crossover is only applied on a random basis,
 		// that is, if a random number is less that 0.3 = CrossoverProbability
 		// @see GeneticAlgorithmConfig.java
@@ -239,7 +193,7 @@ public class GeneticAlgorithm<T extends IChromosome> {
 
 	}
 	
-	protected T[] doMutation(T[] offspring) {
+	protected T[] doMutation(T[] offspring, double avgFitness, double maxFitness, double parentFitness) {
 		// Mutation only applied on a random basis,
 		// that is, if a random number is less than 0.3 = MutationProbability
 		// @see GeneticAlgorithmConfig.java
@@ -264,6 +218,38 @@ public class GeneticAlgorithm<T extends IChromosome> {
 			fitness[i] = population.get(i).getFitness();
 		}
 		return fitness;
+	}
+	
+	/**
+	 * Given a population, return the ones with the best fitness
+	 * 
+	 * @param population
+	 * @return ArrayList elitists
+	 */
+	protected ArrayList<T> doEliteSelect(ArrayList<T> population) {
+		ArrayList<T> elitists = new ArrayList<T>(this.Config.getPopulationSize());
+		// bail early 
+		if ( 0 == this.Config.getEliteChromosomeCount()) {
+			return elitists;
+		}
+		elitists.add(population.get(0));
+
+		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
+			int j = 0;
+			boolean foundElite = false;
+			while (!foundElite && j < elitists.size()) {
+				if (population.get(i).getFitness() > elitists.get(j).getFitness()) {
+					elitists.add(j, population.get(i));
+					foundElite = true;
+				}
+				j++;
+			}
+			if (elitists.size() > this.Config.getEliteChromosomeCount()) {
+				elitists.remove(this.Config.getEliteChromosomeCount());
+			}
+		}
+
+		return elitists;
 	}
 	
 //	protected void UpdateReport(ArrayList<T> population) {
