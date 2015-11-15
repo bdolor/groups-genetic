@@ -53,5 +53,8 @@ public class BinaryTournamentSelect<T extends IChromosome> implements ISelect<T>
 
 		return (T[]) parents;
 	}
-
+	@Override
+	public String toString() {
+		return "Binary Tournament Selection";
+	}
 }

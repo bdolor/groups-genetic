@@ -3,6 +3,8 @@ package main.java.GeneticAlgorithm.GroupEncoding;
 
 import java.util.ArrayList;
 import java.util.Stack;
+
+import main.java.GeneticAlgorithm.Data.StudentScores;
 import main.java.GeneticAlgorithm.Interfaces.IChromosome;
 import main.java.GeneticAlgorithm.Interfaces.IFactory;
 import main.java.GeneticAlgorithm.Interfaces.IStudentChromosome;
@@ -13,7 +15,7 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 
 	private int[] Encoding;
 	private Double fitness = null;
-	private CachedStudentScores scores = new CachedStudentScores();
+	private StudentScores scores = new StudentScores();
 
 	public GroupEncodingChromosome() {
 		this.setEncoding(this.getRandomEncoding());
@@ -25,19 +27,18 @@ public class GroupEncodingChromosome implements IChromosome<int[]>, IFactory<Gro
 	 */
 	@Override
 	public double getFitness() {		
-		double sumGh = 0;
+		double sumGh;
 		
-		if (fitness != null) {
-			sumGh = this.fitness;
-		} else {
-			//if (this.isValid()) {
+		if (fitness == null) {
+			sumGh = 0d;
 				ArrayList<Stack<Integer>> groups = this.getGroupStacks();
 				for (Stack<Integer> group : groups) {
 					sumGh += this.scores.getGhValue(group.get(0), group.get(1), group.get(2), group.get(3));
 				}			
-			//}						
+			this.fitness = sumGh;
 		}		
-		return sumGh;
+		
+		return this.fitness;
 	}
 
 	@Override

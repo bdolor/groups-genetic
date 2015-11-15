@@ -1,4 +1,4 @@
-package main.java.GeneticAlgorithm.StudentGrouping;
+package main.java.GeneticAlgorithm.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,9 +78,6 @@ public class StudentScores {
 	}
 
 	protected double getDistance(int student1, int student2) {
-
-		double distance;
-
 		int s1 = student1 < student2 ? student1 : student2;
 		int s2 = student1 < student2 ? student2 : student1;
 

@@ -3,6 +3,7 @@ package main.java.GeneticAlgorithm.StudentGrouping;
 import java.util.ArrayList;
 
 import main.java.GeneticAlgorithm.Common.PermutationChromosome;
+import main.java.GeneticAlgorithm.Data.StudentScores;
 import main.java.GeneticAlgorithm.Interfaces.IStudentChromosome;
 
 public class StudentGroups extends PermutationChromosome implements IStudentChromosome {
@@ -12,6 +13,8 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 	// public final static int MAXIMUM_STUDENTS = 12;
 	
 	private StudentScores scores = new StudentScores();
+
+	private Double fitness = null;
 
 	public StudentGroups() {
 		super(StudentGroups.MAXIMUM_STUDENTS);
@@ -34,7 +37,10 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 	@Override
 	public double getFitness() {
 
-		//return (this.getDistanceFitness() + this.getGhCompleteFitness() + (2 * this.getSumGhFitness())) / 4;		
+		if (this.fitness == null) {
+			this.fitness = this.getSumGhFitness();
+		}
+		
 		return this.getSumGhFitness();
 	}
 
@@ -120,6 +126,7 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 	}
 
 	
+	@Override
 	public boolean isValid() {
 		Boolean allValidGroups = true;
 
@@ -151,7 +158,7 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 
 	public int[] getValidGroups() {
 
-		ArrayList<Integer> validGroups = new ArrayList<Integer>();
+		ArrayList<Integer> validGroups = new ArrayList<>();
 
 		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
 			Boolean islValidGroup = true;
@@ -242,7 +249,7 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 
 	@Override
 	public ArrayList<int[]> getStudentGroups() {
-		ArrayList<int[]> groups = new ArrayList<int[]>();
+		ArrayList<int[]> groups = new ArrayList<>();
 		
 		for (int i = 0; i < StudentGroups.MAXIMUM_STUDENTS / 4; i++) {
 			int[] group = new int[4];
@@ -256,50 +263,5 @@ public class StudentGroups extends PermutationChromosome implements IStudentChro
 		
 		return groups;		
 	}
-
-	// public void displayResults(ArrayList population, int index, int
-	// crossover, int mutation, int convergence, int evolution, int validCount)
-	// {
-	// // need to output member IDs of the groups (in winner class)
-	// String[] memberIDs = this.Solution.getMembersOfGroup(population, index);
-	//
-	// // highest Euclidean distance of each group (in winner class)
-	// double[] eachGroupED = this.Solution.getEachGroupDistance(population,
-	// index);
-	//
-	// // need to output GH of each group (in winner class)
-	// double[] eachGroupGH = this.Solution.getEachGroupGH(population, index);
-	//
-	// // sum of all GH values
-	// double sumFitness = 0;
-	// for (int i = 0; i < eachGroupGH.length; i++) {
-	// sumFitness += eachGroupGH[i];
-	// }
-	// // track the actual fittestSolution
-	// if (sumFitness > this.fittestSolution) {
-	// this.fittestSolution = sumFitness;
-	// }
-	//
-	// System.out.println(sumFitness);
-	// // loop
-	// //System.out.println(String.format(
-	// //"Generation %d: {convergence: %d }, {sum fitness = %f}, {crossover =
-	// %d}, {mutations = %d}, {valid = %d}",
-	// //evolution, convergence, sumFitness, crossover, mutation, validCount));
-	//
-	// // requirement outputs
-	//// String GH = "";
-	//// String ED = "";
-	//// String ID = "";
-	//// for (int i = 0; i < memberIDs.length; i++) {
-	//// GH += "(" + (i + 1) + ")[" + eachGroupGH[i] + "], ";
-	//// ED += "(" + (i + 1) + ")[" + eachGroupED[i] + "], ";
-	//// ID += "(" + (i + 1) + ")[" + memberIDs[i] + "], ";
-	//// };
-	//// System.out.println("GH: " + GH);
-	//// System.out.println("ED: " + ED);
-	//// System.out.println("ID: " + ID);
-	//// System.out.println("");
-	// }
 
 }

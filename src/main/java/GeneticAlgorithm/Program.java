@@ -1,5 +1,12 @@
 package main.java.GeneticAlgorithm;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionGroup;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
 import main.java.GeneticAlgorithm.Binomial.BinomialChromosome;
 import main.java.GeneticAlgorithm.Binomial.BinomialFactory;
 import main.java.GeneticAlgorithm.Binomial.BinomialSolution;
@@ -12,6 +19,8 @@ import main.java.GeneticAlgorithm.Common.SinglePointCrossover;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingChromosome;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingCrossover;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingMutation;
+import main.java.GeneticAlgorithm.GroupEncoding.MultiPointCrossover;
+import main.java.GeneticAlgorithm.Interfaces.IMutation;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupCrossover;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroups;
 import main.java.GeneticAlgorithm.StudentGrouping.StudentGroupsFactory;
@@ -21,20 +30,57 @@ public class Program {
 
 	public static void main(String[] args) {
 
+		System.out.println("COMP-658 Computational Intelligence - Assignment 2");
 		System.out.println("Athabasca University");
-		System.out.println("Computer Science 658: Computational Intelligence");
-		System.out.println();
-		System.out.println("Assignment #2");
 		System.out.println();
 		System.out.println();
+		
+		System.out.println("Tool for configuring, executing and monitoring Genetic Algorithm to optimize student group heterogenity.");
+
+		
+		CommandLineAlgorithmParser parser = new CommandLineAlgorithmParser();
+		
+		parser.printHelp();
+		
+		//String[] a = new String[] {"-s", "500", "-na", "-g"};
+		
+		GeneticAlgorithm algorithm = null;
+		try {
+			algorithm = parser.getAlgorithm(args);
+		} catch (Exception e) {
+		System.out.println();
+			System.out.println();
+			System.out.println("Error parsing arguments:");
+			System.out.println();
+			System.out.println("   " + e.getMessage());
+			System.out.println();
+			System.out.println("Please try again.");
+			System.out.println();
+			System.exit(1);;		
+		}
 
 		//Program.RunPermutationEncoding();
 		//Program.RunGroupEncoding();
-		Program.RunAdaptiveGroupEncoding();
+		//Program.RunAdaptiveGroupEncoding();
 		//Program.RunAdaptivePermutationEncoding();
 		//Program.RunBinomialSample();
 
+		
+	   ReportFrame report = new ReportFrame();
+	   report.initializeReport(algorithm);
+	   report.setVisible(true);
+	    
+		algorithm.setReport(report);;
+		
+	    try {
+			algorithm.Evolve();
+		} catch (GeneticAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 	}
+	}
+
+
 
 	private static void RunPermutationEncoding() {
 
@@ -47,9 +93,8 @@ public class Program {
 		ga.Config = config;
 		ga.CrossOver = new StudentGroupCrossover<>();
 		ga.Mutation = new PermutationMutation<>();
-		ga.Select = new RouletteSelect<>();
-		//ga.Select = new BinaryTournamentSelect<>();
-		//ga.Solution = new StudentGroupsSolution<StudentGroups>();
+		//ga.Select = new RouletteSelect<>();
+		ga.Select = new BinaryTournamentSelect<>();
 		ga.Factory = new StudentGroupsFactory<>();
 		ga.setReport(report);
 
@@ -104,9 +149,8 @@ public class Program {
 		ga.Config = config;
 		ga.CrossOver = new StudentGroupCrossover<>();
 		ga.Mutation = new PermutationMutation<>();
-		ga.Select = new RouletteSelect<>();
-		//ga.Select = new BinaryTournamentSelect<>();
-		//ga.Solution = new StudentGroupsSolution<StudentGroups>();
+		//ga.Select = new RouletteSelect<>();
+		ga.Select = new BinaryTournamentSelect<>();
 		ga.Factory = new StudentGroupsFactory<>();
 		ga.setReport(report);
 
@@ -133,8 +177,8 @@ public class Program {
 		ga.Config = config;
 		ga.CrossOver = new GroupEncodingCrossover<>();
 		ga.Mutation = new GroupEncodingMutation<>();
-		ga.Select = new RouletteSelect<>();
-		//ga.Select = new BinaryTournamentSelect<>();
+		//ga.Select = new RouletteSelect<>();
+		ga.Select = new BinaryTournamentSelect<>();
 		ga.Factory = new GroupEncodingChromosome();
 		ga.setReport(report);
 

@@ -12,7 +12,7 @@ import org.jfree.ui.ApplicationFrame;
 
 import main.java.GeneticAlgorithm.GeneticAlgorithm;
 import main.java.GeneticAlgorithm.GeneticAlgorithmConfig;
-import main.java.GeneticAlgorithm.GroupEncoding.CachedStudentScores;
+import main.java.GeneticAlgorithm.Data.StudentScores;
 import main.java.GeneticAlgorithm.GroupEncoding.GroupEncodingChromosome;
 import main.java.GeneticAlgorithm.Interfaces.IChromosome;
 import main.java.GeneticAlgorithm.Interfaces.IReport;
@@ -46,8 +46,8 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 	private JLabel PopulationBestFitnessLabel = new JLabel("Best Fitness:");
 	private JLabel PopulationAverageFitnessLabel = new JLabel("Average Fitness:");
 
-	private JLabel BestFitnessLabel = new JLabel("Fitness:");
-	private JLabel BestFitnessEvolutionLabel = new JLabel("Evolution found:");
+	private JLabel BestFitnessLabel = new JLabel("Best Valid Fitness: 0");
+	private JLabel BestFitnessEvolutionLabel = new JLabel("Number of Evolutions: 0");
 
 	private JTable BestChromosome = new JTable();
 
@@ -68,12 +68,12 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 	public void updateReport(double averageFitness, double maxFitness, IChromosome fittest, boolean isConverged, long startTime) {
 		this.Evolution++;
 
-		if (maxFitness > this.bestFitness) {
+		if (fittest.isValid() && maxFitness > this.bestFitness) {
 			this.bestFitness = maxFitness;
 			this.bestFitnessEvolution = this.Evolution;
 
-			this.BestFitnessLabel.setText(String.format("Fitness:   %.3f", this.bestFitness));
-			this.BestFitnessEvolutionLabel.setText(String.format("Evolution found:   %d", this.bestFitnessEvolution));
+			this.BestFitnessLabel.setText(String.format("Best Valid Fitness:   %.3f", this.bestFitness));
+			this.BestFitnessEvolutionLabel.setText(String.format("Number of Evolutions:   %d", this.bestFitnessEvolution));
 
 			this.updateBestChromosome((T) fittest);
 
@@ -85,7 +85,7 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 			this.StatusLabel.setText("Status:   Evolving");
 		}
 
-		this.PopulationBestFitnessLabel.setText(String.format("Best Fitness:   %.3f", maxFitness));
+		this.PopulationBestFitnessLabel.setText(String.format("Best Local Fitness:   %.3f", maxFitness));
 		this.PopulationAverageFitnessLabel.setText(String.format("Average Fitness:   %.3f", averageFitness));
 		this.EvolutionLabel.setText(String.format("Evolution:   %d", this.Evolution));
 		this.ElapsedLabel.setText(
@@ -98,7 +98,7 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 	protected void updateBestChromosome(T chromosome) {
 
 		IStudentChromosome studentChromosome = (IStudentChromosome) chromosome;
-		CachedStudentScores scores = new CachedStudentScores();
+		StudentScores scores = new StudentScores();
 
 		ArrayList<int[]> groups = studentChromosome.getStudentGroups();
 
@@ -160,6 +160,7 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 		panel.add(new JLabel(String.format("Crossover Method:   %s", algorithm.getCrossOver())));
 		panel.add(new JLabel(String.format("Mutation Method:   %s", algorithm.getMutation())));
 		panel.add(new JLabel(String.format("Select Method:   %s", algorithm.getSelect())));
+		panel.add(new JLabel(String.format("Adaptive Mode:   %s", config.isAdapativeEnabled() ? "Enabled" : "Disabled")));
 
 		panel.setBorder(
 				new CompoundBorder(BorderFactory.createTitledBorder("Configuration"), new EmptyBorder(5, 30, 10, 10)));
@@ -180,6 +181,8 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 		panel.add(this.ElapsedLabel);
 		panel.add(this.PopulationBestFitnessLabel);
 		panel.add(this.PopulationAverageFitnessLabel);
+		panel.add(this.BestFitnessLabel);
+		panel.add(this.BestFitnessEvolutionLabel);		
 
 		panel.setBorder(
 				new CompoundBorder(BorderFactory.createTitledBorder("Runtime Status"), new EmptyBorder(5, 30, 10, 10)));
@@ -196,6 +199,7 @@ public class ReportFrame<T extends IChromosome<?>> extends ApplicationFrame impl
 
 		panel.add(this.BestFitnessLabel);
 		panel.add(this.BestFitnessEvolutionLabel);
+
 
 		this.BestChromosome = new JTable(GroupEncodingChromosome.MAXIMUM_STUDENTS / 4, 4);
 		this.BestChromosome.getColumnModel().getColumn(0).setHeaderValue("Group Id");

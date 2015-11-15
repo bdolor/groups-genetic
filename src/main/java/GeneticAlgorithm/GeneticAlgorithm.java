@@ -23,7 +23,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 	protected double fittestSolution;
 	protected int CrossoverCount;
 	protected int MutationCount;
-	protected double[] EvolutionFitness;
 
 	/**
 	 * Build new generation, two at a time to max population size.
@@ -41,8 +40,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		long startTime = System.nanoTime();
 
 		ArrayList<T> population = this.getInitialPopulation();
-
-		this.EvolutionFitness = new double[this.Config.getReportRefreshRate()];
 
 		boolean isComplete = false;
 		int evolution = 1;
@@ -85,10 +82,10 @@ public class GeneticAlgorithm<T extends IChromosome> {
 				// Select the best 'individuals' (student arrangement in a
 				// class) within a population
 				T[] parents = this.Select.GetParents(population, populationFitness,
-					this.Config.getRequiredParentCount());
+					this.CrossOver.getRequiredParentCount());
 
 				// calculate parent fitness (required for adaptive probability)
-				for (int i = 0; i < this.Config.getRequiredParentCount(); i++) {
+				for (int i = 0; i < this.CrossOver.getRequiredParentCount(); i++) {
 					parentFitness += parents[i].getFitness();
 				}
 				// average it out
@@ -165,8 +162,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
 			population.add(this.Factory.CreateChromosome());
 		}
-		System.out
-			.println(String.format("Initialized population with %d candidates.", this.Config.getPopulationSize()));
 
 		return population;
 	}
@@ -252,39 +247,6 @@ public class GeneticAlgorithm<T extends IChromosome> {
 		return elitists;
 	}
 	
-//	protected void UpdateReport(ArrayList<T> population) {
-//
-//		double totalFitness = 0;
-//		double totalGroupCount = 0;
-//		int validSolutions = 0;
-//		double maxFitness = 0;
-//		double minFitness = 0;
-//		double maxValidFitness = 0;
-//
-//		for (int i = 0; i < this.Config.getPopulationSize(); i++) {
-//
-//			double fitness = population.get(i).getFitness();
-//
-//			totalFitness += fitness;
-//			maxFitness = fitness > maxFitness ? fitness : maxFitness;
-//			minFitness = fitness < maxFitness ? fitness : minFitness;		
-//
-//			if (population.get(i).isValid()) {
-//				validSolutions++;
-//				maxValidFitness = fitness > maxValidFitness ? fitness : maxValidFitness;
-//			}
-//
-//		}
-//
-//		double averageFitness = totalFitness / population.size();
-//		double averageValidGroups = totalGroupCount / population.size();
-//
-//		this.Report.updateReport(averageFitness, averageValidGroups, validSolutions, maxFitness, minFitness,
-//			maxValidFitness);
-//
-//		System.out.println(String.format("Avg Fitness = %f Avg Valid Groups = %f Valid Solutions = %d Max Fitness = %f",
-//			averageFitness, averageValidGroups, validSolutions, maxFitness));
-//	}
 
 	public void setConfig(GeneticAlgorithmConfig config) {
 		Config = config;
