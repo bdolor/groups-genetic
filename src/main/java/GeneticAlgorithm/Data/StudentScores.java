@@ -57,7 +57,7 @@ public class StudentScores {
 
 		double adValue = (scores.get(0) + scores.get(3)) / 2;
 		double ghValue = (scores.get(3) - scores.get(0))
-				/ (1 + Math.abs(adValue - scores.get(1)) + Math.abs(adValue - scores.get(2)));
+				/ (1 + (Math.abs(adValue - scores.get(1)) + Math.abs(adValue - scores.get(2))));
 
 		return ghValue;
 	}
